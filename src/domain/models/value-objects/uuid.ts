@@ -1,5 +1,5 @@
 import { v4 as uuidV4, validate as validateUUIDV4 } from "uuid";
-import { IllegalArgumentException } from "../exceptions/illegal-argument-exception";
+import { IllegalArgumentException } from "@domain/models/exceptions";
 
 export class UUID {
     private readonly value: string;

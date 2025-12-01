@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { UUID } from "../../../../src/domain/models/value-objects/uuid";
+import { UUID } from "@domain/models/value-objects";
 import { validate as validateUUIDV4 } from "uuid";
-import { IllegalArgumentException } from "../../../../src/domain/models/exceptions/illegal-argument-exception";
+import { IllegalArgumentException } from "@domain/models/exceptions";
 
 describe("UUID", () => {
     it("should de able to create a new random uuid", () => {
