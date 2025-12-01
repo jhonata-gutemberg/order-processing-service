@@ -5,7 +5,7 @@ export class Email {
 
     private constructor(value: string) {
         if (
-            !value.match("^[a-zA-Z0-9]+[._-]?[a-zA-Z0-9]+@[a-z.]+\\.[a-z]{2,}$")
+            !value.match(/^[a-zA-Z0-9]+[._-]?[a-zA-Z0-9]+@[a-z.]+\.[a-z]{2,}$/)
         ) {
             throw new IllegalArgumentException("invalid email address");
         }
