@@ -1,0 +1,5 @@
+export class CustomerAlreadyExistsException extends Error {
+    constructor(message: string) {
+        super(message);
+    }
+}
