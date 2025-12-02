@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { Email } from "@domain/models/value-objects";
-import { IllegalArgumentException } from "@domain/models/exceptions";
+import { Email } from "@domain/customers/models/value-objects";
+import { IllegalArgumentException } from "@domain/customers/models/exceptions";
 
 describe("Email", () => {
     it("should be able to create an email with .", () => {
