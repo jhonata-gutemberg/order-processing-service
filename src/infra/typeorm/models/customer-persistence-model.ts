@@ -4,8 +4,8 @@ import { Column, Entity, PrimaryColumn } from "typeorm";
 export class CustomerPersistenceModel {
     @PrimaryColumn("uuid")
     id!: string;
-    @Column("varchar", { length: 100 })
+    @Column({ type: "varchar", length: 100 })
     name!: string;
-    @Column("varchar", { length: 250 })
+    @Column({ type: "varchar", length: 250, unique: true })
     email!: string;
 }

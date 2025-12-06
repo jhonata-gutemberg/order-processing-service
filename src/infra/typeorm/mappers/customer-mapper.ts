@@ -1,4 +1,4 @@
-import { CustomerPersistenceModel } from "@/infra/typeorm/models/entities";
+import { CustomerPersistenceModel } from "@/infra/typeorm";
 import { Customer } from "@/domain/customers/models/entities/customer";
 import { Email, UUID } from "@/domain/customers/models/value-objects";
 

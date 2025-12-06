@@ -4,7 +4,7 @@ import { v4 as uuidV4 } from "uuid";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities/customer";
 import { Email } from "@/domain/customers/models/value-objects";
-import { CustomerPersistenceModel } from "@/infra/typeorm/models/entities";
+import { CustomerPersistenceModel } from "@/infra/typeorm";
 import { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/repositories";
 import { truncateTables } from "../../../utils/truncate-tables";
@@ -27,8 +27,8 @@ describe("TypeORMCustomerRepository", () => {
     });
 
     afterAll(async () => {
-        await dataSource.destroy();
-        await postgresContainer.stop();
+        //await dataSource.destroy();
+        //await postgresContainer.stop();
     });
 
     it("should be able to persist a customer", async () => {

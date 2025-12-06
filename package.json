@@ -5,7 +5,9 @@
     "main": "dist/index.js",
     "scripts": {
         "build": "tsc",
-        "test": "vitest"
+        "test": "vitest",
+        "migration:generate": "npm run build && cross-var typeorm migration:generate -d dist/infra/typeorm/data-source src/infra/typeorm/migrations/$npm_config_name",
+        "migration:run": "npm run build && typeorm migration:run -d dist/infra/typeorm/data-source"
     },
     "private": true,
     "devDependencies": {

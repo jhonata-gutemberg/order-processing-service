@@ -2,7 +2,7 @@ import { DataSource, Repository } from "typeorm";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Email } from "@/domain/customers/models/value-objects";
 import { Customer } from "@/domain/customers/models/entities/customer";
-import { CustomerPersistenceModel } from "@/infra/typeorm/models/entities";
+import { CustomerPersistenceModel } from "@/infra/typeorm/models/customer-persistence-model";
 import { CustomerMapper } from "@/infra/typeorm/mappers/customer-mapper";
 
 export class TypeORMCustomerRepository implements CustomerRepository {
