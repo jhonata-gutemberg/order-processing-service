@@ -1,0 +1,10 @@
+import { DataSource } from "typeorm";
+
+export async function truncateTables(dataSource: DataSource) {
+    const entities = dataSource.entityMetadatas;
+
+    for (const entity of entities) {
+        const repository = dataSource.getRepository(entity.name);
+        await repository.query(`truncate table ${entity.tableName}`);
+    }
+}

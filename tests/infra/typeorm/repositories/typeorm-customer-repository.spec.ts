@@ -1,15 +1,14 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
 import { DataSource } from "typeorm";
+import { v4 as uuidV4 } from "uuid";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities/customer";
 import { Email } from "@/domain/customers/models/value-objects";
-import { AppDataSource } from "@/infra/typeorm/data-source";
 import { CustomerPersistenceModel } from "@/infra/typeorm/models/entities";
-import {
-    PostgreSqlContainer,
-    StartedPostgreSqlContainer,
-} from "@testcontainers/postgresql";
+import { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/repositories";
+import { truncateTables } from "../../../utils/truncate-tables";
+import { createTestDataSource } from "../../../utils/create-test-data-source";
 
 describe("TypeORMCustomerRepository", () => {
     let postgresContainer: StartedPostgreSqlContainer;
@@ -17,18 +16,15 @@ describe("TypeORMCustomerRepository", () => {
     let customerRepository: CustomerRepository;
 
     beforeAll(async () => {
-        postgresContainer = await new PostgreSqlContainer(
-            "postgres:18.1",
-        ).start();
-        const appDataSource = new AppDataSource({
-            port: postgresContainer.getPort(),
-            username: postgresContainer.getUsername(),
-            password: postgresContainer.getPassword(),
-            database: postgresContainer.getDatabase(),
-        });
-        dataSource = await appDataSource.initialize();
+        const setup = await createTestDataSource();
+        postgresContainer = setup.postgresContainer;
+        dataSource = setup.dataSource;
         customerRepository = new TypeORMCustomerRepository(dataSource);
     }, 60000);
+
+    afterEach(async () => {
+        await truncateTables(dataSource);
+    });
 
     afterAll(async () => {
         await dataSource.destroy();
@@ -51,5 +47,23 @@ describe("TypeORMCustomerRepository", () => {
         );
         expect(customerPersistenceModel?.name).toBe(customer.name);
         expect(customerPersistenceModel?.email).toBe(customer.email.toString());
+    });
+
+    it("should be able to find customer by email", async () => {
+        const email = "john.doe@email.com";
+        const customerPersistenceModel = new CustomerPersistenceModel();
+        customerPersistenceModel.id = uuidV4();
+        customerPersistenceModel.name = "John Doe";
+        customerPersistenceModel.email = email;
+        await dataSource.manager.save(customerPersistenceModel);
+
+        const customer = await customerRepository.findByEmail(
+            Email.from(email),
+        );
+
+        expect(customer).toBeInstanceOf(Customer);
+        expect(customer?.id.toString()).toBe(customerPersistenceModel.id);
+        expect(customer?.name).toBe(customerPersistenceModel.name);
+        expect(customer?.email.toString()).toBe(customerPersistenceModel.email);
     });
 });

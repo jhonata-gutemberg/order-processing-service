@@ -1,8 +1,9 @@
+import { DataSource, Repository } from "typeorm";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { Email, UUID } from "@/domain/customers/models/value-objects";
+import { Email } from "@/domain/customers/models/value-objects";
 import { Customer } from "@/domain/customers/models/entities/customer";
 import { CustomerPersistenceModel } from "@/infra/typeorm/models/entities";
-import { DataSource, Repository } from "typeorm";
+import { CustomerMapper } from "@/infra/typeorm/mappers/customer-mapper";
 
 export class TypeORMCustomerRepository implements CustomerRepository {
     private readonly repository: Repository<CustomerPersistenceModel>;
@@ -11,22 +12,18 @@ export class TypeORMCustomerRepository implements CustomerRepository {
         this.repository = dataSource.getRepository(CustomerPersistenceModel);
     }
 
-    findByEmail(email: Email): Promise<Customer | null> {
-        throw new Error("Method not implemented.");
+    async findByEmail(email: Email): Promise<Customer | null> {
+        const persistenceModel = await this.repository.findOneBy({
+            email: email.toString(),
+        });
+        return persistenceModel != null
+            ? CustomerMapper.toEntity(persistenceModel)
+            : null;
     }
 
     async save(customer: Customer): Promise<Customer> {
-        let customerPersistenceModel = new CustomerPersistenceModel();
-        customerPersistenceModel.id = customer.id.toString();
-        customerPersistenceModel.name = customer.name;
-        customerPersistenceModel.email = customer.email.toString();
-        customerPersistenceModel = await this.repository.save(
-            customerPersistenceModel,
-        );
-        return new Customer({
-            id: UUID.from(customerPersistenceModel.id),
-            name: customerPersistenceModel.name,
-            email: Email.from(customerPersistenceModel.email),
-        });
+        let persistenceModel = CustomerMapper.toPersistencyModel(customer);
+        persistenceModel = await this.repository.save(persistenceModel);
+        return CustomerMapper.toEntity(persistenceModel);
     }
 }

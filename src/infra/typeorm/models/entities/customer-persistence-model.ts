@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
-console.log("typeorm entity loaded from", require.resolve("typeorm"));
 
 @Entity({ name: "customers" })
 export class CustomerPersistenceModel {
