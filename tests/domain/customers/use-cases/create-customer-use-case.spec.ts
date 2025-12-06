@@ -1,9 +1,9 @@
 import { beforeAll, describe, expect, it, Mocked, vi } from "vitest";
-import { CreateCustomerUseCase } from "@domain/customers/use-cases";
-import { CustomerRepository } from "@domain/customers/contracts/repositories";
-import { Email, UUID } from "@domain/customers/models/value-objects";
-import { Customer } from "@domain/customers/models/entities/customer";
-import { CustomerAlreadyExistsException } from "@domain/customers/models/exceptions";
+import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
+import { CustomerRepository } from "@/domain/customers/contracts/repositories";
+import { Email, UUID } from "@/domain/customers/models/value-objects";
+import { Customer } from "@/domain/customers/models/entities/customer";
+import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
 
 let createCustomerUseCase: CreateCustomerUseCase;
 let customerRepository: Mocked<CustomerRepository>;

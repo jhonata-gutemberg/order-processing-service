@@ -3,4 +3,7 @@ import tsConfigPaths from "vitest-tsconfig-paths";
 
 export default defineConfig({
     plugins: [tsConfigPaths({ projects: ["./tsconfig.test.json"] })],
+    test: {
+        setupFiles: ["./tests/setup.ts"],
+    },
 });

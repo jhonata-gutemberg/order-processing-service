@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { Email, UUID } from "@domain/customers/models/value-objects";
-import { IllegalArgumentException } from "@domain/customers/models/exceptions";
-import { Customer } from "@domain/customers/models/entities/customer";
+import { Email, UUID } from "@/domain/customers/models/value-objects";
+import { IllegalArgumentException } from "@/domain/customers/models/exceptions";
+import { Customer } from "@/domain/customers/models/entities/customer";
 
 describe("Customer", () => {
     it("should be able to create customer", () => {

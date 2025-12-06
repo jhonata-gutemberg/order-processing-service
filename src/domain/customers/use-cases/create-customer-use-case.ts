@@ -1,7 +1,7 @@
-import { CustomerRepository } from "@domain/customers/contracts/repositories";
-import { Email } from "@domain/customers/models/value-objects";
-import { CustomerAlreadyExistsException } from "@domain/customers/models/exceptions";
-import { Customer } from "@domain/customers/models/entities/customer";
+import { CustomerRepository } from "@/domain/customers/contracts/repositories";
+import { Email } from "@/domain/customers/models/value-objects";
+import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
+import { Customer } from "@/domain/customers/models/entities/customer";
 
 export type CreateCustomerUseCaseProps = {
     name: string;
