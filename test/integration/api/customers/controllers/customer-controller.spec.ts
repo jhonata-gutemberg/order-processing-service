@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { container } from "tsyringe";
 import { DataSource } from "typeorm";
-import { app } from "@/infra/express";
+import { createApp } from "@/infra/express";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 
@@ -17,7 +17,7 @@ describe("CustomerController", () => {
         const name = "John Doe";
         const email = "john.doe@email.com";
 
-        const r = request(app);
+        const r = request(createApp());
         const res = await r
             .post("/customers")
             .send({
