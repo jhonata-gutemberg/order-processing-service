@@ -5,6 +5,6 @@ export default defineConfig({
     plugins: [tsConfigPaths({ projects: ["./tsconfig.test.json"] })],
     test: {
         include: ["test/integration/**/*.spec.ts"],
-        //setupFiles: ["./tests/setup.ts"],
+        setupFiles: ["test/integration/utils/setup.ts"],
     },
 });

@@ -1,34 +1,16 @@
-import { describe, it, expect, beforeAll, afterAll, afterEach } from "vitest";
-import { DataSource } from "typeorm";
+import { describe, it, expect, beforeAll } from "vitest";
 import { v4 as uuidV4 } from "uuid";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities/customer";
 import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerPersistenceModel } from "@/infra/typeorm";
-import { StartedPostgreSqlContainer } from "@testcontainers/postgresql";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/repositories";
-import { truncateTables } from "../../../utils/truncate-tables";
-import { createTestDataSource } from "../../../utils/create-test-data-source";
 
 describe("TypeORMCustomerRepository", () => {
-    let postgresContainer: StartedPostgreSqlContainer;
-    let dataSource: DataSource;
     let customerRepository: CustomerRepository;
 
     beforeAll(async () => {
-        const setup = await createTestDataSource();
-        postgresContainer = setup.postgresContainer;
-        dataSource = setup.dataSource;
-        customerRepository = new TypeORMCustomerRepository(dataSource);
-    }, 60000);
-
-    afterEach(async () => {
-        await truncateTables(dataSource);
-    });
-
-    afterAll(async () => {
-        //await dataSource.destroy();
-        //await postgresContainer.stop();
+        customerRepository = new TypeORMCustomerRepository(testDataSource);
     });
 
     it("should be able to persist a customer", async () => {
@@ -38,7 +20,7 @@ describe("TypeORMCustomerRepository", () => {
 
         await customerRepository.save(customer);
 
-        const customerPersistenceModel = await dataSource.manager.findOneBy(
+        const customerPersistenceModel = await testDataSource.manager.findOneBy(
             CustomerPersistenceModel,
             { id: customer.id.toString() },
         );
@@ -55,7 +37,7 @@ describe("TypeORMCustomerRepository", () => {
         customerPersistenceModel.id = uuidV4();
         customerPersistenceModel.name = "John Doe";
         customerPersistenceModel.email = email;
-        await dataSource.manager.save(customerPersistenceModel);
+        await testDataSource.manager.save(customerPersistenceModel);
 
         const customer = await customerRepository.findByEmail(
             Email.from(email),
