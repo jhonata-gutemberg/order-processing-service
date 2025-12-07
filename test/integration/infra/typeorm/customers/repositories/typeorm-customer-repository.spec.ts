@@ -5,8 +5,8 @@ import { DataSource } from "typeorm";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities/customer";
 import { Email } from "@/domain/customers/models/value-objects";
-import { CustomerPersistenceModel } from "@/infra/typeorm";
-import { TypeORMCustomerRepository } from "@/infra/typeorm/repositories";
+import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
+import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
 
 describe("TypeORMCustomerRepository", () => {

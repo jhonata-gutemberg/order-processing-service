@@ -27,7 +27,7 @@ export async function createAppDataSource(props?: AppDataSourceProps) {
         database: props?.database || "test",
         synchronize: false,
         logging: false,
-        entities: await loadClasses("models"),
+        entities: await loadClasses("customers/models"),
         subscribers: [],
         migrations: await loadClasses("migrations"),
     });

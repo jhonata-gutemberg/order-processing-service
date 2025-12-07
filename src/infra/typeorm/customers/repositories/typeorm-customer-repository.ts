@@ -3,8 +3,8 @@ import { inject, injectable } from "tsyringe";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Email } from "@/domain/customers/models/value-objects";
 import { Customer } from "@/domain/customers/models/entities/customer";
-import { CustomerPersistenceModel } from "@/infra/typeorm/models/customer-persistence-model";
-import { CustomerMapper } from "@/infra/typeorm/mappers/customer-mapper";
+import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
+import { CustomerMapper } from "@/infra/typeorm/customers/mappers";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
 
 @injectable()
