@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
+import { CustomerInput, CustomerOutput } from "@/api/customers/models";
+import { CustomerMapper } from "@/api/customers/mappers";
 
 @injectable()
 export class CustomerController {
@@ -9,15 +11,15 @@ export class CustomerController {
         private readonly createCustomerUseCase: CreateCustomerUseCase,
     ) {}
 
-    public create = async (req: Request, res: Response) => {
+    public create = async (
+        req: Request<{}, {}, CustomerInput>,
+        res: Response<CustomerOutput>,
+    ) => {
+        const { name, email } = req.body;
         const customer = await this.createCustomerUseCase.perform({
-            name: req.body.name,
-            email: req.body.email,
+            name,
+            email,
         });
-        res.status(201).send({
-            id: customer.id.toString(),
-            name: customer.name,
-            email: customer.email.toString(),
-        });
+        res.status(201).send(CustomerMapper.toOutput(customer));
     };
 }

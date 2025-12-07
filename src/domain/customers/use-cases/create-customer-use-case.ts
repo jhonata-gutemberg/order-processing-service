@@ -2,7 +2,7 @@ import { inject, injectable } from "tsyringe";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
-import { Customer } from "@/domain/customers/models/entities/customer";
+import { Customer } from "@/domain/customers/models/entities";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 
 export type CreateCustomerUseCaseProps = {

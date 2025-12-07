@@ -3,7 +3,7 @@ import { v4 as uuidV4 } from "uuid";
 import { container } from "tsyringe";
 import { DataSource } from "typeorm";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { Customer } from "@/domain/customers/models/entities/customer";
+import { Customer } from "@/domain/customers/models/entities";
 import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";

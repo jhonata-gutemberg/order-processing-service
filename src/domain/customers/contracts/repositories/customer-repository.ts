@@ -1,5 +1,5 @@
 import { Email } from "@/domain/customers/models/value-objects";
-import { Customer } from "@/domain/customers/models/entities/customer";
+import { Customer } from "@/domain/customers/models/entities";
 
 export interface CustomerRepository {
     findByEmail(email: Email): Promise<Customer | null>;
