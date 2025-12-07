@@ -4,6 +4,7 @@ import tsConfigPaths from "vitest-tsconfig-paths";
 export default defineConfig({
     plugins: [tsConfigPaths({ projects: ["./tsconfig.test.json"] })],
     test: {
-        include: ["test/unit/**/*.spec.ts"],
+        include: ["test/integration/**/*.spec.ts"],
+        //setupFiles: ["./tests/setup.ts"],
     },
 });

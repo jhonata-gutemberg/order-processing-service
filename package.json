@@ -6,6 +6,7 @@
     "scripts": {
         "build": "tsc",
         "test": "vitest",
+        "integration": "vitest --config vitest.integration.config.ts",
         "migration:generate": "npm run build && cross-var typeorm migration:generate -d dist/infra/typeorm/data-source src/infra/typeorm/migrations/$npm_config_name",
         "migration:run": "npm run build && typeorm migration:run -d dist/infra/typeorm/data-source"
     },
