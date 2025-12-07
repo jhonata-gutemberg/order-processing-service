@@ -1,16 +1,21 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { v4 as uuidV4 } from "uuid";
+import { container } from "tsyringe";
+import { DataSource } from "typeorm";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities/customer";
 import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerPersistenceModel } from "@/infra/typeorm";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/repositories";
+import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
 
 describe("TypeORMCustomerRepository", () => {
+    let dataSource: DataSource;
     let customerRepository: CustomerRepository;
 
     beforeAll(async () => {
-        customerRepository = new TypeORMCustomerRepository(testDataSource);
+        dataSource = container.resolve(DATA_SOURCE_TOKEN);
+        customerRepository = container.resolve(TypeORMCustomerRepository);
     });
 
     it("should be able to persist a customer", async () => {
@@ -20,7 +25,7 @@ describe("TypeORMCustomerRepository", () => {
 
         await customerRepository.save(customer);
 
-        const customerPersistenceModel = await testDataSource.manager.findOneBy(
+        const customerPersistenceModel = await dataSource.manager.findOneBy(
             CustomerPersistenceModel,
             { id: customer.id.toString() },
         );
@@ -37,7 +42,7 @@ describe("TypeORMCustomerRepository", () => {
         customerPersistenceModel.id = uuidV4();
         customerPersistenceModel.name = "John Doe";
         customerPersistenceModel.email = email;
-        await testDataSource.manager.save(customerPersistenceModel);
+        await dataSource.manager.save(customerPersistenceModel);
 
         const customer = await customerRepository.findByEmail(
             Email.from(email),
