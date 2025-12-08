@@ -1,24 +1,24 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import request from "supertest";
 import { container } from "tsyringe";
 import { DataSource } from "typeorm";
-import { createApp } from "@/infra/express";
-import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
+import TestAgent from "supertest/lib/agent";
+import { DATA_SOURCE_TOKEN, TEST_AGENT_TOKEN } from "@/infra/di/tokens";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 
 describe("CustomerController", () => {
     let dataSource: DataSource;
+    let request: TestAgent;
 
     beforeAll(() => {
         dataSource = container.resolve(DATA_SOURCE_TOKEN);
+        request = container.resolve(TEST_AGENT_TOKEN);
     });
 
     it("should return 201 when customer created", async () => {
         const name = "John Doe";
         const email = "john.doe@email.com";
 
-        const r = request(createApp());
-        const res = await r
+        const res = await request
             .post("/customers")
             .send({
                 name,
