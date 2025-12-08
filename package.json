@@ -2,13 +2,14 @@
     "name": "order-processing-service",
     "version": "1.0.0",
     "description": "",
-    "main": "dist/index.js",
+    "main": "dist/main/server.js",
     "scripts": {
+        "dev": "ts-node -r tsconfig-paths/register src/main/server.ts",
         "build": "tsc",
         "test": "vitest",
         "integration": "vitest --config vitest.integration.config.ts",
         "migration:generate": "npm run build && cross-var typeorm migration:generate -d dist/infra/typeorm/data-source src/infra/typeorm/migrations/$npm_config_name",
-        "migration:run": "npm run build && typeorm migration:run -d dist/infra/typeorm/data-source"
+        "migration:run": "npm run build && node -r dotenv/config node_modules/typeorm/cli migration:run -d dist/infra/typeorm/data-source"
     },
     "private": true,
     "devDependencies": {
@@ -22,12 +23,15 @@
         "globals": "^16.5.0",
         "prettier": "^3.7.3",
         "supertest": "^7.1.4",
+        "ts-node": "^10.9.2",
+        "tsconfig-paths": "^4.2.0",
         "typescript": "^5.5.3",
         "typescript-eslint": "^8.48.0",
         "vitest": "^4.0.14",
         "vitest-tsconfig-paths": "^3.4.1"
     },
     "dependencies": {
+        "dotenv": "^17.2.3",
         "express": "^5.2.1",
         "pg": "^8.16.3",
         "reflect-metadata": "^0.2.2",

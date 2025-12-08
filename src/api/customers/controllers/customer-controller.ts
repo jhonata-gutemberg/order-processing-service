@@ -38,6 +38,7 @@ export class CustomerController {
                     message: ex.message,
                 });
             }
+            console.error(ex);
             res.status(500).send({
                 message: "internal server error",
             });
