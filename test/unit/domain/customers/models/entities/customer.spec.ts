@@ -33,10 +33,7 @@ describe("Customer", () => {
 
         const customer = () => new Customer({ name, email });
 
-        expect(customer).throws(
-            IllegalArgumentException,
-            "name must not be empty",
-        );
+        expect(customer).throws(IllegalArgumentException, "name is required");
     });
 
     it("should not be able to create customer without a special characters", () => {

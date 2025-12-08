@@ -3,7 +3,7 @@ import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
 import { Customer } from "@/domain/customers/models/entities";
-import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
+import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 
 export type CreateCustomerUseCaseProps = {
     name: string;
@@ -13,7 +13,7 @@ export type CreateCustomerUseCaseProps = {
 @injectable()
 export class CreateCustomerUseCase {
     constructor(
-        @inject(TypeORMCustomerRepository)
+        @inject(CUSTOMER_REPOSITORY_TOKEN)
         private readonly customerRepository: CustomerRepository,
     ) {}
 

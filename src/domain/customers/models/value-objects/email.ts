@@ -4,6 +4,9 @@ export class Email {
     private readonly value: string;
 
     private constructor(value: string) {
+        if (value === undefined || value === null || value.trim() === "") {
+            throw new IllegalArgumentException("email is required");
+        }
         if (
             !value.match(/^[a-zA-Z0-9]+[._-]?[a-zA-Z0-9]+@[a-z.]+\.[a-z]{2,}$/)
         ) {

@@ -32,8 +32,8 @@ export class Customer {
     }
 
     private validate(name: string) {
-        if (name.trim() === "") {
-            throw new IllegalArgumentException("name must not be empty");
+        if (name === undefined || name === null || name.trim() === "") {
+            throw new IllegalArgumentException("name is required");
         }
         if (name.trim().length < 2) {
             throw new IllegalArgumentException(
