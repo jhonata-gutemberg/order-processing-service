@@ -8,6 +8,7 @@ import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
+import { Pageable, Sort } from "@/domain/shared/models/value-objects";
 
 describe("TypeORMCustomerRepository", () => {
     let dataSource: DataSource;
@@ -38,11 +39,10 @@ describe("TypeORMCustomerRepository", () => {
 
     it("should be able to find customer by email", async () => {
         const email = "john.doe@email.com";
-        const customerPersistenceModel = new CustomerPersistenceModel();
-        customerPersistenceModel.id = uuidV4();
-        customerPersistenceModel.name = "John Doe";
-        customerPersistenceModel.email = email;
-        await dataSource.manager.save(customerPersistenceModel);
+        const customerPersistenceModel = await persistCustomer(
+            "John Doe",
+            email,
+        );
 
         const customer = await customerRepository.findByEmail(
             Email.from(email),
@@ -53,4 +53,40 @@ describe("TypeORMCustomerRepository", () => {
         expect(customer?.name).toBe(customerPersistenceModel.name);
         expect(customer?.email.toString()).toBe(customerPersistenceModel.email);
     });
+
+    it("should be able to find all customers", async () => {
+        await persistCustomer("Carlos", "carlos@email.com");
+        await persistCustomer("Bruno", "bruno@email.com");
+        await persistCustomer("Anabel", "anabel@email.com");
+
+        const firstPage = await customerRepository.findAll(
+            Pageable.of(0, 2, Sort.of("name")),
+        );
+        const secondPage = await customerRepository.findAll(
+            Pageable.of(1, 2, Sort.of("name")),
+        );
+
+        expect(firstPage.content.length).toBe(2);
+        expect(firstPage.content[0].name).toBe("Anabel");
+        expect(firstPage.content[0].email.toString()).toBe("anabel@email.com");
+        expect(firstPage.content[1].name).toBe("Bruno");
+        expect(firstPage.content[1].email.toString()).toBe("bruno@email.com");
+        expect(firstPage.currentPage).toBe(0);
+        expect(firstPage.totalItems).toBe(2);
+        expect(firstPage.totalPages).toBe(2);
+        expect(secondPage.content.length).toBe(1);
+        expect(secondPage.content[0].name).toBe("Carlos");
+        expect(secondPage.content[0].email.toString()).toBe("carlos@email.com");
+        expect(secondPage.currentPage).toBe(1);
+        expect(secondPage.totalItems).toBe(1);
+        expect(secondPage.totalPages).toBe(2);
+    });
+
+    async function persistCustomer(name: string, email: string) {
+        const customerPersistenceModel = new CustomerPersistenceModel();
+        customerPersistenceModel.id = uuidV4();
+        customerPersistenceModel.name = name;
+        customerPersistenceModel.email = email;
+        return await dataSource.manager.save(customerPersistenceModel);
+    }
 });
