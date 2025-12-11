@@ -1,6 +1,6 @@
 export type PageableQueryParameter = {
-    page?: number;
-    size?: number;
+    page?: string;
+    size?: string;
     sortBy?: string;
     direction?: string;
 };

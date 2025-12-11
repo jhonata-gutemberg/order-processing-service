@@ -15,6 +15,7 @@ import { ErrorResponse } from "@/api/shared/models";
 import { Page, Pageable, Sort } from "@/domain/shared/models/value-objects";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
+import { StringToIntegerConverter } from "@/api/customers/converters";
 
 @injectable()
 export class CustomerController {
@@ -60,8 +61,8 @@ export class CustomerController {
     ) => {
         const { page: pageNumber, size, sortBy, direction } = req.query;
         const pageable = Pageable.of(
-            pageNumber,
-            size,
+            StringToIntegerConverter.convert(pageNumber),
+            StringToIntegerConverter.convert(size),
             Sort.of(sortBy, direction),
         );
         const page = await this.customerRepository.findAll(pageable);
