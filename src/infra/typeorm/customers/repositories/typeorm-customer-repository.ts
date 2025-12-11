@@ -1,4 +1,4 @@
-import { DataSource, Repository } from "typeorm";
+import { DataSource, FindOptionsOrder, Repository } from "typeorm";
 import { inject, injectable } from "tsyringe";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Email } from "@/domain/customers/models/value-objects";
@@ -33,12 +33,14 @@ export class TypeORMCustomerRepository implements CustomerRepository {
 
     async findAll(pageable: Pageable): Promise<Page<Customer>> {
         const { page, size, sort } = pageable;
+        let order: FindOptionsOrder<CustomerPersistenceModel> | undefined;
+        if (sort !== undefined && sort.by in CustomerPersistenceModel) {
+            order = { [sort.by]: sort.direction };
+        }
         const [persistenceModels, total] = await this.repository.findAndCount({
             skip: page * size,
             take: size,
-            order: sort && {
-                [sort.by]: sort.direction,
-            },
+            order,
         });
         return new Page(
             persistenceModels.map(CustomerMapper.toEntity),

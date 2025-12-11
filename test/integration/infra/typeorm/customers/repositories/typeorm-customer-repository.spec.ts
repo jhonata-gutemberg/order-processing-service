@@ -82,6 +82,17 @@ describe("TypeORMCustomerRepository", () => {
         expect(secondPage.totalPages).toBe(2);
     });
 
+    it("should ignore invalid sortBy", async () => {
+        await persistCustomer("Anabel", "anabel@email.com");
+        await persistCustomer("Bruno", "bruno@email.com");
+        await persistCustomer("Carlos", "carlos@email.com");
+
+        const findAll = () =>
+            customerRepository.findAll(Pageable.of(0, 10, Sort.of("invalid")));
+
+        expect(findAll).not.throws();
+    });
+
     async function persistCustomer(name: string, email: string) {
         const customerPersistenceModel = new CustomerPersistenceModel();
         customerPersistenceModel.id = uuidV4();
