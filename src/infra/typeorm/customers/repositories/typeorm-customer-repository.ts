@@ -43,6 +43,7 @@ export class TypeORMCustomerRepository implements CustomerRepository {
         return new Page(
             persistenceModels.map(CustomerMapper.toEntity),
             pageable.page,
+            pageable.size,
             persistenceModels.length,
             Math.ceil(total / size),
         );

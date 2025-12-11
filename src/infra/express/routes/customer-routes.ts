@@ -6,5 +6,6 @@ export function customerRoutes() {
     const router = Router();
     const customerController = container.resolve(CustomerController);
     router.post("/customers", customerController.create);
+    router.get("/customers", customerController.search);
     return router;
 }

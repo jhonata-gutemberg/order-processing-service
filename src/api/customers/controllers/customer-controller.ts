@@ -1,19 +1,28 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
-import { CustomerInput, CustomerOutput } from "@/api/customers/models";
+import {
+    CustomerInput,
+    CustomerOutput,
+    PageableQueryParameter,
+} from "@/api/customers/models";
 import { CustomerMapper } from "@/api/customers/mappers";
 import {
     CustomerAlreadyExistsException,
     IllegalArgumentException,
 } from "@/domain/customers/models/exceptions";
 import { ErrorResponse } from "@/api/shared/models";
+import { Page, Pageable, Sort } from "@/domain/shared/models/value-objects";
+import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
+import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 
 @injectable()
 export class CustomerController {
     constructor(
         @inject(CreateCustomerUseCase)
         private readonly createCustomerUseCase: CreateCustomerUseCase,
+        @inject(CUSTOMER_REPOSITORY_TOKEN)
+        private readonly customerRepository: CustomerRepository,
     ) {}
 
     public create = async (
@@ -43,5 +52,19 @@ export class CustomerController {
                 message: "internal server error",
             });
         }
+    };
+
+    public search = async (
+        req: Request<{}, {}, {}, PageableQueryParameter>,
+        res: Response<Page<CustomerOutput>>,
+    ) => {
+        const { page: pageNumber, size, sortBy, direction } = req.query;
+        const pageable = Pageable.of(
+            pageNumber,
+            size,
+            Sort.of(sortBy, direction),
+        );
+        const page = await this.customerRepository.findAll(pageable);
+        res.send(page.map(CustomerMapper.toOutput));
     };
 }

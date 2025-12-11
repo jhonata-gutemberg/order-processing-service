@@ -7,7 +7,7 @@ export class Pageable {
         public readonly sort?: Sort,
     ) {}
 
-    public static of(page: number, size: number, sort?: Sort) {
+    public static of(page: number = 0, size: number = 10, sort?: Sort) {
         return new Pageable(page, size, sort);
     }
 }
