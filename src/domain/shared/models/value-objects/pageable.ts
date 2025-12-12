@@ -7,11 +7,10 @@ export class Pageable {
         public readonly size: number,
         public readonly sort?: Sort,
     ) {
-        if (!Number.isInteger(page)) {
-            throw new IllegalArgumentException("page must be a integer");
-        }
-        if (page < 0) {
-            throw new IllegalArgumentException("page must not be negative");
+        if (!Number.isInteger(page) || page < 0) {
+            throw new IllegalArgumentException(
+                "page must be a non negative integer",
+            );
         }
         if (!Number.isInteger(size) || size <= 0) {
             throw new IllegalArgumentException(

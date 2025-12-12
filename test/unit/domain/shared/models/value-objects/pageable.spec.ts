@@ -8,7 +8,7 @@ describe("Pageable", () => {
 
         expect(pageable).throws(
             IllegalArgumentException,
-            "page must be a integer",
+            "page must be a non negative integer",
         );
     });
 
@@ -17,7 +17,7 @@ describe("Pageable", () => {
 
         expect(pageable).throws(
             IllegalArgumentException,
-            "page must be a integer",
+            "page must be a non negative integer",
         );
     });
 
@@ -26,7 +26,7 @@ describe("Pageable", () => {
 
         expect(pageable).throws(
             IllegalArgumentException,
-            "page must not be negative",
+            "page must be a non negative integer",
         );
     });
 
