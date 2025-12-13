@@ -5,8 +5,9 @@ import {
     CustomerInput,
     CustomerOutput,
     PageableQueryParams,
+    PageOutput,
 } from "@/api/customers/models";
-import { CustomerMapper } from "@/api/customers/mappers";
+import { CustomerMapper, PageMapper } from "@/api/customers/mappers";
 import {
     CustomerAlreadyExistsException,
     IllegalArgumentException,
@@ -14,8 +15,6 @@ import {
 import { ErrorResponse } from "@/api/shared/models";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { PageOutput } from "@/api/customers/models/page";
-import { PageMapper } from "@/api/customers/mappers/page-mapper";
 
 @injectable()
 export class CustomerController {
