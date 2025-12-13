@@ -52,7 +52,7 @@ export class PageableQueryParams {
         return Pageable.of(
             this.page,
             this.size,
-            Sort.of(this.sortBy, this.direction),
+            this.sortBy ? Sort.of(this.sortBy, this.direction) : undefined,
         );
     }
 }
