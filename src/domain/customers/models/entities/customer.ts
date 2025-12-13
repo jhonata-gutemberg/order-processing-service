@@ -1,5 +1,5 @@
 import { Email, UUID } from "@/domain/customers/models/value-objects";
-import { IllegalArgumentException } from "@/domain/customers/models/exceptions";
+import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 
 export type CustomerProps = {
     id?: UUID;
