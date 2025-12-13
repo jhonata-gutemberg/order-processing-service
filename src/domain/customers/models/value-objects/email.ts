@@ -1,4 +1,4 @@
-import { IllegalArgumentException } from "@/domain/customers/models/exceptions";
+import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 
 export class Email {
     private readonly value: string;

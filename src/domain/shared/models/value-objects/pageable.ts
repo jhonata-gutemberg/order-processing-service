@@ -1,5 +1,5 @@
 import { Integer, Sort } from "@/domain/shared/models/value-objects";
-import { IllegalArgumentException } from "@/domain/customers/models/exceptions";
+import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 
 export class Pageable {
     private constructor(
