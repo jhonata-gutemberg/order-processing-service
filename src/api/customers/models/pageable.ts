@@ -4,7 +4,7 @@ import {
     Sort,
     SortDirection,
 } from "@/domain/shared/models/value-objects";
-import { IllegalArgumentException } from "@/domain/shared/models/exceptions/illegal-argument-exception";
+import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 
 export class PageableQueryParams {
     private constructor(

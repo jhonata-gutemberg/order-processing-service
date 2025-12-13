@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Integer } from "@/domain/shared/models/value-objects";
-import { IllegalArgumentException } from "@/domain/shared/models/exceptions/illegal-argument-exception";
+import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 
 describe("Integer", () => {
     it("should be able to create a integer from a number", () => {

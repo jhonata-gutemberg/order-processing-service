@@ -8,13 +8,11 @@ import {
     PageOutput,
 } from "@/api/customers/models";
 import { CustomerMapper, PageMapper } from "@/api/customers/mappers";
-import {
-    CustomerAlreadyExistsException,
-    IllegalArgumentException,
-} from "@/domain/customers/models/exceptions";
+import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
 import { ErrorResponse } from "@/api/shared/models";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
+import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 
 @injectable()
 export class CustomerController {

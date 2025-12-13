@@ -1,4 +1,4 @@
-import { IllegalArgumentException } from "@/domain/shared/models/exceptions/illegal-argument-exception";
+import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 
 export class Integer {
     public static ZERO = Integer.of(0);

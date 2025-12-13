@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PageableQueryParams } from "@/api/customers/models";
-import { IllegalArgumentException } from "@/domain/shared/models/exceptions/illegal-argument-exception";
+import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 import {
     Integer,
     Pageable,
