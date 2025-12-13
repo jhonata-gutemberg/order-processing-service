@@ -8,7 +8,7 @@ import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
-import { Pageable, Sort } from "@/domain/shared/models/value-objects";
+import { Integer, Pageable, Sort } from "@/domain/shared/models/value-objects";
 
 describe("TypeORMCustomerRepository", () => {
     let dataSource: DataSource;
@@ -60,10 +60,10 @@ describe("TypeORMCustomerRepository", () => {
         await persistCustomer("Anabel", "anabel@email.com");
 
         const firstPage = await customerRepository.findAll(
-            Pageable.of(0, 2, Sort.of("name")),
+            Pageable.of(Integer.ZERO, Integer.TWO, Sort.of("name")),
         );
         const secondPage = await customerRepository.findAll(
-            Pageable.of(1, 2, Sort.of("name")),
+            Pageable.of(Integer.ONE, Integer.TWO, Sort.of("name")),
         );
 
         expect(firstPage.content.length).toBe(2);
@@ -71,15 +71,15 @@ describe("TypeORMCustomerRepository", () => {
         expect(firstPage.content[0].email.toString()).toBe("anabel@email.com");
         expect(firstPage.content[1].name).toBe("Bruno");
         expect(firstPage.content[1].email.toString()).toBe("bruno@email.com");
-        expect(firstPage.currentPage).toBe(0);
-        expect(firstPage.totalItems).toBe(2);
-        expect(firstPage.totalPages).toBe(2);
+        expect(firstPage.currentPage).toStrictEqual(Integer.ZERO);
+        expect(firstPage.totalItems).toStrictEqual(Integer.TWO);
+        expect(firstPage.totalPages).toStrictEqual(Integer.TWO);
         expect(secondPage.content.length).toBe(1);
         expect(secondPage.content[0].name).toBe("Carlos");
         expect(secondPage.content[0].email.toString()).toBe("carlos@email.com");
-        expect(secondPage.currentPage).toBe(1);
-        expect(secondPage.totalItems).toBe(1);
-        expect(secondPage.totalPages).toBe(2);
+        expect(secondPage.currentPage).toStrictEqual(Integer.ONE);
+        expect(secondPage.totalItems).toStrictEqual(Integer.ONE);
+        expect(secondPage.totalPages).toStrictEqual(Integer.TWO);
     });
 
     it("should ignore invalid sortBy", async () => {
@@ -88,7 +88,9 @@ describe("TypeORMCustomerRepository", () => {
         await persistCustomer("Carlos", "carlos@email.com");
 
         const findAll = () =>
-            customerRepository.findAll(Pageable.of(0, 10, Sort.of("invalid")));
+            customerRepository.findAll(
+                Pageable.of(Integer.ZERO, Integer.TEN, Sort.of("invalid")),
+            );
 
         expect(findAll).not.throws();
     });

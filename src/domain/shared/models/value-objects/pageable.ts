@@ -1,20 +1,20 @@
-import { Sort } from "@/domain/shared/models/value-objects";
+import { Integer, Sort } from "@/domain/shared/models/value-objects";
 import { IllegalArgumentException } from "@/domain/customers/models/exceptions";
 
 export class Pageable {
     private constructor(
-        public readonly page: number,
-        public readonly size: number,
+        public readonly page: Integer,
+        public readonly size: Integer,
         public readonly sort?: Sort,
     ) {
-        if (!Number.isInteger(page) || page < 0) {
+        if (!Integer.isInteger(page) || page.isNegative()) {
             throw new IllegalArgumentException(
-                "page must be a non negative integer",
+                "page must be a non negative Integer",
             );
         }
-        if (!Number.isInteger(size) || size <= 0) {
+        if (!Integer.isInteger(size) || !size.isPositive()) {
             throw new IllegalArgumentException(
-                "size must be a positive integer",
+                "size must be a positive Integer",
             );
         }
         if (sort !== undefined && !Sort.isSort(sort)) {
@@ -24,7 +24,11 @@ export class Pageable {
         }
     }
 
-    public static of(page: number = 0, size: number = 10, sort?: Sort) {
+    public static of(
+        page: Integer = Integer.ZERO,
+        size: Integer = Integer.TEN,
+        sort?: Sort,
+    ) {
         return new Pageable(page, size, sort);
     }
 }

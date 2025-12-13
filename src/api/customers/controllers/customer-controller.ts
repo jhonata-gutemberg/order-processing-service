@@ -4,7 +4,7 @@ import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
 import {
     CustomerInput,
     CustomerOutput,
-    PageableQueryParameter,
+    PageableQueryParams,
 } from "@/api/customers/models";
 import { CustomerMapper } from "@/api/customers/mappers";
 import {
@@ -12,10 +12,10 @@ import {
     IllegalArgumentException,
 } from "@/domain/customers/models/exceptions";
 import { ErrorResponse } from "@/api/shared/models";
-import { Page, Pageable, Sort } from "@/domain/shared/models/value-objects";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { StringToIntegerConverter } from "@/api/customers/converters";
+import { PageOutput } from "@/api/customers/models/page";
+import { PageMapper } from "@/api/customers/mappers/page-mapper";
 
 @injectable()
 export class CustomerController {
@@ -56,16 +56,13 @@ export class CustomerController {
     };
 
     public search = async (
-        req: Request<{}, {}, {}, PageableQueryParameter>,
-        res: Response<Page<CustomerOutput>>,
+        req: Request,
+        res: Response<PageOutput<CustomerOutput>>,
     ) => {
-        const { page: pageNumber, size, sortBy, direction } = req.query;
-        const pageable = Pageable.of(
-            StringToIntegerConverter.convert(pageNumber),
-            StringToIntegerConverter.convert(size),
-            Sort.of(sortBy, direction),
+        const pageableQueryParams = PageableQueryParams.parse(req.query);
+        const page = await this.customerRepository.findAll(
+            pageableQueryParams.toPageable(),
         );
-        const page = await this.customerRepository.findAll(pageable);
-        res.send(page.map(CustomerMapper.toOutput));
+        res.send(PageMapper.toOutput(page, CustomerMapper.toOutput));
     };
 }

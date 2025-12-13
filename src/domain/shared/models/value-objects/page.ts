@@ -1,19 +1,11 @@
+import { Integer } from "@/domain/shared/models/value-objects/integer";
+
 export class Page<T> {
     constructor(
         public readonly content: T[],
-        public readonly currentPage: number,
-        public readonly pageSize: number,
-        public readonly totalItems: number,
-        public readonly totalPages: number,
+        public readonly currentPage: Integer,
+        public readonly pageSize: Integer,
+        public readonly totalItems: Integer,
+        public readonly totalPages: Integer,
     ) {}
-
-    public map<O>(callback: (content: T) => O) {
-        return new Page<O>(
-            this.content.map(callback),
-            this.currentPage,
-            this.pageSize,
-            this.totalItems,
-            this.totalPages,
-        );
-    }
 }

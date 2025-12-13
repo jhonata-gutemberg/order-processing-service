@@ -6,7 +6,7 @@ import { Customer } from "@/domain/customers/models/entities/customer";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { CustomerMapper } from "@/infra/typeorm/customers/mappers";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
-import { Page, Pageable } from "@/domain/shared/models/value-objects";
+import { Integer, Page, Pageable } from "@/domain/shared/models/value-objects";
 
 @injectable()
 export class TypeORMCustomerRepository implements CustomerRepository {
@@ -38,16 +38,16 @@ export class TypeORMCustomerRepository implements CustomerRepository {
             order = { [sort.by]: sort.direction };
         }
         const [persistenceModels, total] = await this.repository.findAndCount({
-            skip: page * size,
-            take: size,
+            skip: page.multiply(size).value,
+            take: size.value,
             order,
         });
         return new Page(
             persistenceModels.map(CustomerMapper.toEntity),
             pageable.page,
             pageable.size,
-            persistenceModels.length,
-            Math.ceil(total / size),
+            Integer.of(persistenceModels.length),
+            Integer.of(Math.ceil(total / size.value)),
         );
     }
 }
