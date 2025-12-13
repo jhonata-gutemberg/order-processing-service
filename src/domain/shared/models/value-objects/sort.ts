@@ -19,4 +19,8 @@ export class Sort {
             return new Sort(by, sortDirection);
         }
     }
+
+    public static isSort(sort: unknown) {
+        return sort instanceof Sort;
+    }
 }

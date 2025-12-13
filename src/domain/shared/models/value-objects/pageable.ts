@@ -17,7 +17,7 @@ export class Pageable {
                 "size must be a positive integer",
             );
         }
-        if (sort !== undefined && !this.isSort(sort)) {
+        if (sort !== undefined && !Sort.isSort(sort)) {
             throw new IllegalArgumentException(
                 "sort should be a instance of Sort",
             );
@@ -26,9 +26,5 @@ export class Pageable {
 
     public static of(page: number = 0, size: number = 10, sort?: Sort) {
         return new Pageable(page, size, sort);
-    }
-
-    private isSort(sort: unknown) {
-        return sort instanceof Sort;
     }
 }
