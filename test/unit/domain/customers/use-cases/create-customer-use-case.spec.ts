@@ -4,6 +4,7 @@ import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Email, UUID } from "@/domain/customers/models/value-objects";
 import { Customer } from "@/domain/customers/models/entities";
 import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
+import { Name } from "@/domain/shared/models/value-objects";
 
 let createCustomerUseCase: CreateCustomerUseCase;
 let customerRepository: Mocked<CustomerRepository>;
@@ -12,23 +13,19 @@ beforeAll(() => {
     customerRepository = {
         findByEmail: vi.fn(),
         save: vi.fn(),
+        findAll: vi.fn(),
     };
     createCustomerUseCase = new CreateCustomerUseCase(customerRepository);
 });
 
 describe("CreateCustomerUseCase", () => {
     it("should be able to create a customer", async () => {
-        const name = "John Doe";
-        const stringEmail = "john.doe@email.com";
-        const email = Email.from(stringEmail);
-        customerRepository.save.mockResolvedValue(
-            new Customer({ name, email }),
-        );
+        const name = Name.of("John Doe");
+        const email = Email.from("john.doe@email.com");
+        const props = { name, email };
+        customerRepository.save.mockResolvedValue(Customer.create(props));
 
-        const customer = await createCustomerUseCase.perform({
-            name,
-            email: stringEmail,
-        });
+        const customer = await createCustomerUseCase.perform(props);
 
         expect(customerRepository.findByEmail).toHaveBeenCalledExactlyOnceWith(
             email,
@@ -46,13 +43,14 @@ describe("CreateCustomerUseCase", () => {
     });
 
     it("should throw when customer already exists", async () => {
-        const name = "John Doe";
-        const email = "john.doe@email.com";
+        const name = Name.of("John Doe");
+        const email = Email.from("john.doe@email.com");
+        const props = { name, email };
         customerRepository.findByEmail.mockResolvedValue(
-            new Customer({ name, email: Email.from(email) }),
+            Customer.create(props),
         );
 
-        const useCase = () => createCustomerUseCase.perform({ name, email });
+        const useCase = () => createCustomerUseCase.perform(props);
 
         await expect(useCase).rejects.throws(
             CustomerAlreadyExistsException,
