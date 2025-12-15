@@ -1,8 +1,6 @@
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { Customer } from "@/domain/customers/models/entities/customer";
-import { Email } from "@/domain/shared/models/value-objects";
-import { Name } from "@/domain/shared/models/value-objects";
-import { UUID } from "@/domain/customers/models/value-objects";
+import { Name, Email, UUID } from "@/domain/shared/models/value-objects";
 
 export class CustomerMapper {
     public static toEntity(persistencyModel: CustomerPersistenceModel) {

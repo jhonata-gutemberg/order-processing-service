@@ -1,5 +1,4 @@
-import { Email, UUID } from "@/domain/customers/models/value-objects";
-import { Name } from "@/domain/shared/models/value-objects/name";
+import { Name, Email, UUID } from "@/domain/shared/models/value-objects";
 
 export type CustomerProps = {
     id?: UUID;

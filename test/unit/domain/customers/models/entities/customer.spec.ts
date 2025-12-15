@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { UUID } from "@/domain/customers/models/value-objects";
 import { Customer } from "@/domain/customers/models/entities";
-import { Name, Email } from "@/domain/shared/models/value-objects";
+import { Name, Email, UUID } from "@/domain/shared/models/value-objects";
 
 describe("Customer", () => {
     it("should be able to create customer", () => {
