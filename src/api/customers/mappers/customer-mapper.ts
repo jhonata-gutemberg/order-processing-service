@@ -5,7 +5,7 @@ export class CustomerMapper {
     public static toOutput(customer: Customer): CustomerOutput {
         return {
             id: customer.id.toString(),
-            name: customer.name,
+            name: customer.name.toString(),
             email: customer.email.toString(),
         };
     }

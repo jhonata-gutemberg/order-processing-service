@@ -1,49 +1,21 @@
 import { Email, UUID } from "@/domain/customers/models/value-objects";
-import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
+import { Name } from "@/domain/shared/models/value-objects/name";
 
 export type CustomerProps = {
     id?: UUID;
-    name: string;
+    name: Name;
     email: Email;
 };
 
 export class Customer {
-    private readonly _id: UUID;
-    private readonly _name: string;
-    private readonly _email: Email;
+    private constructor(
+        public readonly id: UUID = UUID.random(),
+        public readonly name: Name,
+        public readonly email: Email,
+    ) {}
 
-    constructor(props: CustomerProps) {
-        this.validate(props.name);
-        this._id = props.id ?? UUID.random();
-        this._name = props.name;
-        this._email = props.email;
-    }
-
-    get id(): UUID {
-        return this._id;
-    }
-
-    get name(): string {
-        return this._name;
-    }
-
-    get email(): Email {
-        return this._email;
-    }
-
-    private validate(name: string) {
-        if (name === undefined || name === null || name.trim() === "") {
-            throw new IllegalArgumentException("name is required");
-        }
-        if (name.trim().length < 2) {
-            throw new IllegalArgumentException(
-                "name must be at least 2 characters",
-            );
-        }
-        if (!name.match(/^[a-zA-Z ]+$/)) {
-            throw new IllegalArgumentException(
-                "name must not contain numbers or special characters",
-            );
-        }
+    public static create(props: CustomerProps) {
+        const { id, name, email } = props;
+        return new Customer(id, name, email);
     }
 }

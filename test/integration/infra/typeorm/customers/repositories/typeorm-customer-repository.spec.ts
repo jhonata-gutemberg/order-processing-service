@@ -8,7 +8,12 @@ import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
-import { Integer, Pageable, Sort } from "@/domain/shared/models/value-objects";
+import {
+    Integer,
+    Name,
+    Pageable,
+    Sort,
+} from "@/domain/shared/models/value-objects";
 
 describe("TypeORMCustomerRepository", () => {
     let dataSource: DataSource;
@@ -20,9 +25,9 @@ describe("TypeORMCustomerRepository", () => {
     });
 
     it("should be able to persist a customer", async () => {
-        const name = "John Doe";
+        const name = Name.of("John Doe");
         const email = Email.from("john.doe@email.com");
-        const customer = new Customer({ name, email });
+        const customer = Customer.create({ name, email });
 
         await customerRepository.save(customer);
 
@@ -33,7 +38,7 @@ describe("TypeORMCustomerRepository", () => {
         expect(customerPersistenceModel).toBeInstanceOf(
             CustomerPersistenceModel,
         );
-        expect(customerPersistenceModel?.name).toBe(customer.name);
+        expect(customerPersistenceModel?.name).toBe(customer.name.toString());
         expect(customerPersistenceModel?.email).toBe(customer.email.toString());
     });
 
@@ -50,7 +55,7 @@ describe("TypeORMCustomerRepository", () => {
 
         expect(customer).toBeInstanceOf(Customer);
         expect(customer?.id.toString()).toBe(customerPersistenceModel.id);
-        expect(customer?.name).toBe(customerPersistenceModel.name);
+        expect(customer?.name.toString()).toBe(customerPersistenceModel.name);
         expect(customer?.email.toString()).toBe(customerPersistenceModel.email);
     });
 
@@ -67,15 +72,15 @@ describe("TypeORMCustomerRepository", () => {
         );
 
         expect(firstPage.content.length).toBe(2);
-        expect(firstPage.content[0].name).toBe("Anabel");
+        expect(firstPage.content[0].name).toStrictEqual(Name.of("Anabel"));
         expect(firstPage.content[0].email.toString()).toBe("anabel@email.com");
-        expect(firstPage.content[1].name).toBe("Bruno");
+        expect(firstPage.content[1].name).toStrictEqual(Name.of("Bruno"));
         expect(firstPage.content[1].email.toString()).toBe("bruno@email.com");
         expect(firstPage.currentPage).toStrictEqual(Integer.ZERO);
         expect(firstPage.totalItems).toStrictEqual(Integer.TWO);
         expect(firstPage.totalPages).toStrictEqual(Integer.TWO);
         expect(secondPage.content.length).toBe(1);
-        expect(secondPage.content[0].name).toBe("Carlos");
+        expect(secondPage.content[0].name).toStrictEqual(Name.of("Carlos"));
         expect(secondPage.content[0].email.toString()).toBe("carlos@email.com");
         expect(secondPage.currentPage).toStrictEqual(Integer.ONE);
         expect(secondPage.totalItems).toStrictEqual(Integer.ONE);

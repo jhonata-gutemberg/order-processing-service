@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
+import { z } from "zod";
 import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
 import {
-    CustomerInput,
     CustomerOutput,
     PageableQueryParams,
     PageOutput,
@@ -10,6 +10,8 @@ import {
 import { CustomerMapper, PageMapper } from "@/api/customers/mappers";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
+import { Name } from "@/domain/shared/models/value-objects";
+import { Email } from "@/domain/customers/models/value-objects";
 
 @injectable()
 export class CustomerController {
@@ -20,15 +22,13 @@ export class CustomerController {
         private readonly customerRepository: CustomerRepository,
     ) {}
 
-    public create = async (
-        req: Request<{}, {}, CustomerInput>,
-        res: Response<CustomerOutput>,
-    ) => {
-        const { name, email } = req.body;
-        const customer = await this.createCustomerUseCase.perform({
-            name,
-            email,
+    public create = async (req: Request, res: Response<CustomerOutput>) => {
+        const schema = z.object({
+            name: z.transform(Name.of),
+            email: z.transform(Email.from),
         });
+        const props = schema.parse(req.body);
+        const customer = await this.createCustomerUseCase.perform(props);
         res.status(201).send(CustomerMapper.toOutput(customer));
     };
 
