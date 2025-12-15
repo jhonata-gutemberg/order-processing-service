@@ -1,17 +1,15 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
-import { z } from "zod";
 import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
-import {
-    CustomerOutput,
-    PageableQueryParams,
-    PageOutput,
-} from "@/api/customers/models";
+import { CustomerOutput, PageOutput } from "@/api/customers/models";
 import { CustomerMapper, PageMapper } from "@/api/customers/mappers";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { Name } from "@/domain/shared/models/value-objects";
-import { Email } from "@/domain/customers/models/value-objects";
+import { PageQueryParamsMapper } from "@/api/customers/mappers";
+import {
+    CustomerInputSchema,
+    PageQueryParamsSchema,
+} from "@/api/customers/schemas";
 
 @injectable()
 export class CustomerController {
@@ -23,11 +21,7 @@ export class CustomerController {
     ) {}
 
     public create = async (req: Request, res: Response<CustomerOutput>) => {
-        const schema = z.object({
-            name: z.transform(Name.of),
-            email: z.transform(Email.from),
-        });
-        const props = schema.parse(req.body);
+        const props = CustomerInputSchema.parse(req.body);
         const customer = await this.createCustomerUseCase.perform(props);
         res.status(201).send(CustomerMapper.toOutput(customer));
     };
@@ -36,10 +30,9 @@ export class CustomerController {
         req: Request,
         res: Response<PageOutput<CustomerOutput>>,
     ) => {
-        const pageableQueryParams = PageableQueryParams.parse(req.query);
-        const page = await this.customerRepository.findAll(
-            pageableQueryParams.toPageable(),
-        );
+        const pageQueryParams = PageQueryParamsSchema.parse(req.query);
+        const pageable = PageQueryParamsMapper.toPageable(pageQueryParams);
+        const page = await this.customerRepository.findAll(pageable);
         res.send(PageMapper.toOutput(page, CustomerMapper.toOutput));
     };
 }

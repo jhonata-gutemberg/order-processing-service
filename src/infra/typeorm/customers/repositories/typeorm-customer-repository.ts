@@ -34,8 +34,8 @@ export class TypeORMCustomerRepository implements CustomerRepository {
     async findAll(pageable: Pageable): Promise<Page<Customer>> {
         const { page, size, sort } = pageable;
         let order: FindOptionsOrder<CustomerPersistenceModel> | undefined;
-        if (sort !== undefined && sort.by in CustomerPersistenceModel) {
-            order = { [sort.by]: sort.direction };
+        if (sort !== undefined && sort.by.value in CustomerPersistenceModel) {
+            order = { [sort.by.value]: sort.direction };
         }
         const [persistenceModels, total] = await this.repository.findAndCount({
             skip: page.multiply(size).value,

@@ -1,3 +1,5 @@
+import { VString } from "@/domain/shared/models/value-objects";
+
 export enum SortDirection {
     asc = "asc",
     desc = "desc",
@@ -5,11 +7,14 @@ export enum SortDirection {
 
 export class Sort {
     private constructor(
-        public readonly by: string,
+        public readonly by: VString,
         public readonly direction: SortDirection,
     ) {}
 
-    public static of(by: string, direction: SortDirection = SortDirection.asc) {
+    public static of(
+        by: VString,
+        direction: SortDirection = SortDirection.asc,
+    ) {
         return new Sort(by, direction);
     }
 

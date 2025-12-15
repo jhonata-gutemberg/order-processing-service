@@ -1,3 +1,3 @@
 export * from "./customer";
-export * from "./pageable";
+export * from "./page-query-params";
 export * from "./page";

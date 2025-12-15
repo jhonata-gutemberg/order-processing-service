@@ -9,10 +9,10 @@ export class Integer {
 
     private constructor(public readonly value: number) {}
 
-    public static of(value: number, fieldName?: string): Integer {
+    public static of(value: number, fieldName: string = "value"): Integer {
         if (!Number.isInteger(value)) {
             throw new IllegalArgumentException(
-                `${fieldName ?? "value"} must be a integer`,
+                `${fieldName} must be a integer`,
             );
         }
         return new Integer(value);
