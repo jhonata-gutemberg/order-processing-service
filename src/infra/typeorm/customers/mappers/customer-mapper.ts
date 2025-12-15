@@ -1,14 +1,15 @@
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { Customer } from "@/domain/customers/models/entities/customer";
-import { Email, UUID } from "@/domain/customers/models/value-objects";
+import { Email } from "@/domain/shared/models/value-objects";
 import { Name } from "@/domain/shared/models/value-objects";
+import { UUID } from "@/domain/customers/models/value-objects";
 
 export class CustomerMapper {
     public static toEntity(persistencyModel: CustomerPersistenceModel) {
         return Customer.create({
             id: UUID.from(persistencyModel.id),
             name: Name.of(persistencyModel.name),
-            email: Email.from(persistencyModel.email),
+            email: Email.of(persistencyModel.email),
         });
     }
 

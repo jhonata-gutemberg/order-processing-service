@@ -10,8 +10,7 @@ import {
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
-import { Email } from "@/domain/customers/models/value-objects";
-import { Name } from "@/domain/shared/models/value-objects";
+import { Name, Email } from "@/domain/shared/models/value-objects";
 
 describe("CustomerController", () => {
     let dataSource: DataSource;
@@ -191,7 +190,7 @@ describe("CustomerController", () => {
             await customerRepository.save(
                 Customer.create({
                     name: Name.of(name),
-                    email: Email.from(email),
+                    email: Email.of(email),
                 }),
             );
 
@@ -214,19 +213,19 @@ describe("CustomerController", () => {
             await customerRepository.save(
                 Customer.create({
                     name: Name.of("John Doe"),
-                    email: Email.from("john.doe@email.com"),
+                    email: Email.of("john.doe@email.com"),
                 }),
             );
             await customerRepository.save(
                 Customer.create({
                     name: Name.of("Anabel"),
-                    email: Email.from("anabel@email.com"),
+                    email: Email.of("anabel@email.com"),
                 }),
             );
             await customerRepository.save(
                 Customer.create({
                     name: Name.of("Newton"),
-                    email: Email.from("newton@email.com"),
+                    email: Email.of("newton@email.com"),
                 }),
             );
 

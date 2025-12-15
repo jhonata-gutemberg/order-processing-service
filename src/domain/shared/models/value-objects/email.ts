@@ -1,10 +1,12 @@
 import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
+import { VString } from "@/domain/shared/models/value-objects/index";
 
 export class Email {
-    private readonly value: string;
+    private constructor(private readonly email: VString) {}
 
-    private constructor(value: string) {
-        if (value === undefined || value === null || value.trim() === "") {
+    public static of(value: string) {
+        const validValue = VString.of(value, "email");
+        if (validValue.isEmpty()) {
             throw new IllegalArgumentException("email is required");
         }
         if (
@@ -12,14 +14,10 @@ export class Email {
         ) {
             throw new IllegalArgumentException("invalid email address");
         }
-        this.value = value;
-    }
-
-    public static from(value: string) {
-        return new Email(value);
+        return new Email(validValue);
     }
 
     public toString() {
-        return this.value;
+        return this.email.value;
     }
 }
