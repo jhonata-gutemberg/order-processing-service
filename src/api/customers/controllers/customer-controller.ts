@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
-import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
+import {
+    CreateCustomerUseCase,
+    GetCustomerByIdUseCase,
+} from "@/domain/customers/use-cases";
 import { CustomerOutput, PageOutput } from "@/api/customers/models";
 import { CustomerMapper, PageMapper } from "@/api/customers/mappers";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { PageQueryParamsMapper } from "@/api/customers/mappers";
+import { UUID } from "@/domain/shared/models/value-objects";
 import {
     CustomerInputSchema,
     PageQueryParamsSchema,
@@ -16,6 +20,8 @@ export class CustomerController {
     constructor(
         @inject(CreateCustomerUseCase)
         private readonly createCustomerUseCase: CreateCustomerUseCase,
+        @inject(GetCustomerByIdUseCase)
+        private readonly getCustomerByIdUseCase: GetCustomerByIdUseCase,
         @inject(CUSTOMER_REPOSITORY_TOKEN)
         private readonly customerRepository: CustomerRepository,
     ) {}
@@ -34,5 +40,11 @@ export class CustomerController {
         const pageable = PageQueryParamsMapper.toPageable(pageQueryParams);
         const page = await this.customerRepository.findAll(pageable);
         res.send(PageMapper.toOutput(page, CustomerMapper.toOutput));
+    };
+
+    public getById = async (req: Request, res: Response<CustomerOutput>) => {
+        const id = UUID.from(req.params.id);
+        const customer = await this.getCustomerByIdUseCase.perform(id);
+        res.send(CustomerMapper.toOutput(customer));
     };
 }

@@ -10,6 +10,7 @@ let customerRepository: Mocked<CustomerRepository>;
 
 beforeAll(() => {
     customerRepository = {
+        findById: vi.fn(),
         findByEmail: vi.fn(),
         save: vi.fn(),
         findAll: vi.fn(),

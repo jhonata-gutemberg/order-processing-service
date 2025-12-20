@@ -13,6 +13,7 @@ import {
     Name,
     Pageable,
     Sort,
+    UUID,
 } from "@/domain/shared/models/value-objects";
 
 describe("TypeORMCustomerRepository", () => {
@@ -50,6 +51,22 @@ describe("TypeORMCustomerRepository", () => {
         );
 
         const customer = await customerRepository.findByEmail(Email.of(email));
+
+        expect(customer).toBeInstanceOf(Customer);
+        expect(customer?.id.toString()).toBe(customerPersistenceModel.id);
+        expect(customer?.name.toString()).toBe(customerPersistenceModel.name);
+        expect(customer?.email.toString()).toBe(customerPersistenceModel.email);
+    });
+
+    it("should be able to find customer by id", async () => {
+        const customerPersistenceModel = await persistCustomer(
+            "John Doe",
+            "john.doe@email.com",
+        );
+
+        const customer = await customerRepository.findById(
+            UUID.from(customerPersistenceModel.id),
+        );
 
         expect(customer).toBeInstanceOf(Customer);
         expect(customer?.id.toString()).toBe(customerPersistenceModel.id);

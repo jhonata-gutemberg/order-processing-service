@@ -1,10 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { Email } from "@/domain/customers/models/value-objects";
 import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
 import { Customer } from "@/domain/customers/models/entities";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
-import { Name } from "@/domain/shared/models/value-objects";
+import { Email, Name } from "@/domain/shared/models/value-objects";
 
 export type CreateCustomerUseCaseProps = {
     name: Name;

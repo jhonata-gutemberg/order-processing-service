@@ -10,7 +10,7 @@ import {
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
-import { Name, Email } from "@/domain/shared/models/value-objects";
+import { Name, Email, UUID } from "@/domain/shared/models/value-objects";
 
 describe("CustomerController", () => {
     let dataSource: DataSource;
@@ -250,6 +250,37 @@ describe("CustomerController", () => {
                 pageSize: 10,
                 totalItems: 3,
                 totalPages: 1,
+            });
+        });
+    });
+
+    describe("getById", () => {
+        it("should return 200 when customer exists", async () => {
+            const customer = await customerRepository.save(
+                Customer.create({
+                    name: Name.of("John Doe"),
+                    email: Email.of("john.doe@email.com"),
+                }),
+            );
+
+            const res = await request
+                .get(`/customers/${customer.id.toString()}`)
+                .expect(200);
+
+            expect(res.body).toMatchObject({
+                id: customer.id.toString(),
+                name: "John Doe",
+                email: "john.doe@email.com",
+            });
+        });
+
+        it("should return 404 when customer does not exist", async () => {
+            const id = UUID.random();
+
+            const res = await request.get(`/customers/${id.toString()}`).expect(404);
+
+            expect(res.body).toMatchObject({
+                message: `customer ${id.toString()} not found`,
             });
         });
     });
