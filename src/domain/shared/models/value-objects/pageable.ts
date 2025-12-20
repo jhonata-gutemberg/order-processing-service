@@ -7,19 +7,14 @@ export class Pageable {
         public readonly size: Integer,
         public readonly sort?: Sort,
     ) {
-        if (!Integer.isInteger(page) || page.isNegative()) {
+        if (page.isNegative()) {
             throw new IllegalArgumentException(
                 "page must be a non negative Integer",
             );
         }
-        if (!Integer.isInteger(size) || !size.isPositive()) {
+        if (!size.isPositive()) {
             throw new IllegalArgumentException(
                 "size must be a positive Integer",
-            );
-        }
-        if (sort !== undefined && !Sort.isSort(sort)) {
-            throw new IllegalArgumentException(
-                "sort should be a instance of Sort",
             );
         }
     }

@@ -13,7 +13,6 @@ import {
     Name,
     Pageable,
     Sort,
-    VString,
 } from "@/domain/shared/models/value-objects";
 
 describe("TypeORMCustomerRepository", () => {
@@ -64,10 +63,10 @@ describe("TypeORMCustomerRepository", () => {
         await persistCustomer("Anabel", "anabel@email.com");
 
         const firstPage = await customerRepository.findAll(
-            Pageable.of(Integer.ZERO, Integer.TWO, Sort.of(VString.of("name"))),
+            Pageable.of(Integer.ZERO, Integer.TWO, Sort.of("name")),
         );
         const secondPage = await customerRepository.findAll(
-            Pageable.of(Integer.ONE, Integer.TWO, Sort.of(VString.of("name"))),
+            Pageable.of(Integer.ONE, Integer.TWO, Sort.of("name")),
         );
 
         expect(firstPage.content.length).toBe(2);
@@ -93,11 +92,7 @@ describe("TypeORMCustomerRepository", () => {
 
         const findAll = () =>
             customerRepository.findAll(
-                Pageable.of(
-                    Integer.ZERO,
-                    Integer.TEN,
-                    Sort.of(VString.of("name")),
-                ),
+                Pageable.of(Integer.ZERO, Integer.TEN, Sort.of("name")),
             );
 
         expect(findAll).not.throws();

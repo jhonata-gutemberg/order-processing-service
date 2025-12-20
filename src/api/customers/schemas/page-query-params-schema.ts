@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-    Integer,
-    SortDirection,
-    VString,
-} from "@/domain/shared/models/value-objects";
+import { Integer, SortDirection } from "@/domain/shared/models/value-objects";
 
 export const PageQueryParamsSchema = z.object({
     page: z
@@ -14,10 +10,7 @@ export const PageQueryParamsSchema = z.object({
         .any()
         .transform((value) => Integer.of(value, "size"))
         .optional(),
-    sortBy: z
-        .any()
-        .transform((value) => VString.of(value, "sortBy"))
-        .optional(),
+    sortBy: z.any().optional(),
     direction: z
         .string()
         .transform(

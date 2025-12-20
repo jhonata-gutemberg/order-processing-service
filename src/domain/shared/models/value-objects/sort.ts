@@ -1,4 +1,4 @@
-import { VString } from "@/domain/shared/models/value-objects";
+import { StringValidator } from "@/domain/shared/validators";
 
 export enum SortDirection {
     asc = "asc",
@@ -7,18 +7,12 @@ export enum SortDirection {
 
 export class Sort {
     private constructor(
-        public readonly by: VString,
+        public readonly by: string,
         public readonly direction: SortDirection,
     ) {}
 
-    public static of(
-        by: VString,
-        direction: SortDirection = SortDirection.asc,
-    ) {
+    public static of(by: string, direction: SortDirection = SortDirection.asc) {
+        StringValidator.validate(by);
         return new Sort(by, direction);
-    }
-
-    public static isSort(value: unknown) {
-        return value instanceof Sort;
     }
 }

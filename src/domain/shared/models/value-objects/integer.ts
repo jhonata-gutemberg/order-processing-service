@@ -4,7 +4,6 @@ export class Integer {
     public static ZERO = Integer.of(0);
     public static ONE = Integer.of(1);
     public static TWO = Integer.of(2);
-    public static FIVE = Integer.of(5);
     public static TEN = Integer.of(10);
 
     private constructor(public readonly value: number) {}
@@ -16,10 +15,6 @@ export class Integer {
             );
         }
         return new Integer(value);
-    }
-
-    public static isInteger(value: unknown) {
-        return value instanceof Integer;
     }
 
     public isPositive() {
