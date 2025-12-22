@@ -3,14 +3,16 @@ import { Integer, SortDirection } from "@/domain/shared/models/value-objects";
 
 export const PageQueryParamsSchema = z.object({
     page: z
-        .any()
+        .string()
+        .transform((value) => Number(value))
         .transform((value) => Integer.of(value, "page"))
         .optional(),
     size: z
-        .any()
+        .string()
+        .transform((value) => Number(value))
         .transform((value) => Integer.of(value, "size"))
         .optional(),
-    sortBy: z.any().optional(),
+    sortBy: z.string().optional(),
     direction: z
         .string()
         .transform(
