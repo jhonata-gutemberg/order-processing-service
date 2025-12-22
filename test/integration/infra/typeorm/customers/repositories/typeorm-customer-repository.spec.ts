@@ -7,12 +7,7 @@ import { Customer } from "@/domain/customers/models/entities";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
-import {
-    Name,
-    Pageable,
-    Sort,
-    UUID,
-} from "@/domain/shared/models/value-objects";
+import { Pageable, Sort, UUID } from "@/domain/shared/models/value-objects";
 
 describe("TypeORMCustomerRepository", () => {
     let dataSource: DataSource;
@@ -24,7 +19,7 @@ describe("TypeORMCustomerRepository", () => {
     });
 
     it("should be able to persist a customer", async () => {
-        const name = Name.of("John Doe");
+        const name = "John Doe";
         const email = "john.doe@email.com";
         const customer = await Customer.create({ name, email });
 
@@ -85,15 +80,15 @@ describe("TypeORMCustomerRepository", () => {
         );
 
         expect(firstPage.content.length).toBe(2);
-        expect(firstPage.content[0].name).toStrictEqual(Name.of("Anabel"));
+        expect(firstPage.content[0].name).toBe("Anabel");
         expect(firstPage.content[0].email.toString()).toBe("anabel@email.com");
-        expect(firstPage.content[1].name).toStrictEqual(Name.of("Bruno"));
+        expect(firstPage.content[1].name).toBe("Bruno");
         expect(firstPage.content[1].email.toString()).toBe("bruno@email.com");
         expect(firstPage.currentPage).toBe(0);
         expect(firstPage.totalItems).toBe(2);
         expect(firstPage.totalPages).toBe(2);
         expect(secondPage.content.length).toBe(1);
-        expect(secondPage.content[0].name).toStrictEqual(Name.of("Carlos"));
+        expect(secondPage.content[0].name).toBe("Carlos");
         expect(secondPage.content[0].email.toString()).toBe("carlos@email.com");
         expect(secondPage.currentPage).toBe(1);
         expect(secondPage.totalItems).toBe(1);

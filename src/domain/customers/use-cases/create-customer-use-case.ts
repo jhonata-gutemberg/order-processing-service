@@ -3,10 +3,9 @@ import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
 import { Customer } from "@/domain/customers/models/entities";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
-import { Name } from "@/domain/shared/models/value-objects";
 
 export type CreateCustomerUseCaseProps = {
-    name: Name;
+    name: string;
     email: string;
 };
 

@@ -1,21 +1,26 @@
-import { Name, UUID } from "@/domain/shared/models/value-objects";
+import { UUID } from "@/domain/shared/models/value-objects";
 import { IsEmail, validateOrReject } from "class-validator";
+import { IsName } from "@/domain/shared/decorators";
 
 export type CustomerProps = {
     id?: UUID;
-    name: Name;
+    name: string;
     email: string;
 };
 
 export class Customer {
+    @IsName()
+    public readonly name: string;
+
     @IsEmail()
     public readonly email: string;
 
     private constructor(
         public readonly id: UUID = UUID.random(),
-        public readonly name: Name,
+        name: string,
         email: string,
     ) {
+        this.name = name;
         this.email = email;
     }
 

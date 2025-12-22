@@ -3,7 +3,7 @@ import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
 import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
-import { Name, UUID } from "@/domain/shared/models/value-objects";
+import { UUID } from "@/domain/shared/models/value-objects";
 
 let createCustomerUseCase: CreateCustomerUseCase;
 let customerRepository: Mocked<CustomerRepository>;
@@ -20,7 +20,7 @@ beforeAll(() => {
 
 describe("CreateCustomerUseCase", () => {
     it("should be able to create a customer", async () => {
-        const name = Name.of("John Doe");
+        const name = "John Doe";
         const email = "john.doe@email.com";
         const props = { name, email };
         const persistedCustomer = await Customer.create(props);
@@ -44,7 +44,7 @@ describe("CreateCustomerUseCase", () => {
     });
 
     it("should throw when customer already exists", async () => {
-        const name = Name.of("John Doe");
+        const name = "John Doe";
         const email = "john.doe@email.com";
         const props = { name, email };
         const customer = await Customer.create(props);

@@ -1,13 +1,13 @@
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { Customer } from "@/domain/customers/models/entities/customer";
-import { Name, UUID } from "@/domain/shared/models/value-objects";
+import { UUID } from "@/domain/shared/models/value-objects";
 
 export class CustomerMapper {
     public static async toEntity(persistencyModel: CustomerPersistenceModel) {
-        const { email } = persistencyModel;
+        const { id, name, email } = persistencyModel;
         return Customer.create({
-            id: await UUID.of(persistencyModel.id),
-            name: Name.of(persistencyModel.name),
+            id: await UUID.of(id),
+            name,
             email,
         });
     }

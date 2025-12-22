@@ -3,7 +3,7 @@ import { GetCustomerByIdUseCase } from "@/domain/customers/use-cases";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
 import { CustomerNotFoundException } from "@/domain/customers/models/exceptions";
-import { Name, UUID } from "@/domain/shared/models/value-objects";
+import { UUID } from "@/domain/shared/models/value-objects";
 
 let getCustomerByIdUseCase: GetCustomerByIdUseCase;
 let customerRepository: Mocked<CustomerRepository>;
@@ -23,7 +23,7 @@ describe("GetCustomerByIdUseCase", () => {
         const id = UUID.random();
         const customer = await Customer.create({
             id,
-            name: Name.of("John Doe"),
+            name: "John Doe",
             email: "john.doe@email.com",
         });
         customerRepository.findById.mockResolvedValue(customer);
