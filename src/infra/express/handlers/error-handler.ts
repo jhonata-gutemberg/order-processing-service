@@ -5,6 +5,7 @@ import {
     CustomerAlreadyExistsException,
     CustomerNotFoundException,
 } from "@/domain/customers/models/exceptions";
+import { ZodError } from "zod";
 
 export function errorHandler(
     error: unknown,
@@ -19,6 +20,11 @@ export function errorHandler(
     }
     if (error instanceof Array && error[0] instanceof ValidationError) {
         return res.status(400).send(error);
+    }
+    if (error instanceof ZodError) {
+        return res.status(400).send({
+            message: JSON.parse(error.message),
+        });
     }
     if (error instanceof CustomerAlreadyExistsException) {
         return res.status(409).send({
