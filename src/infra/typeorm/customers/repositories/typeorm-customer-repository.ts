@@ -47,7 +47,7 @@ export class TypeORMCustomerRepository implements CustomerRepository {
             order = { [sort.by]: sort.direction };
         }
         const [persistenceModels, total] = await this.repository.findAndCount({
-            skip: page.multiply(size).value,
+            skip: page * size.value,
             take: size.value,
             order,
         });

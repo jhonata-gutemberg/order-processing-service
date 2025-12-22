@@ -37,7 +37,8 @@ export class CustomerController {
         res: Response<PageOutput<CustomerOutput>>,
     ) => {
         const pageQueryParams = PageQueryParamsSchema.parse(req.query);
-        const pageable = PageQueryParamsMapper.toPageable(pageQueryParams);
+        const pageable =
+            await PageQueryParamsMapper.toPageable(pageQueryParams);
         const page = await this.customerRepository.findAll(pageable);
         res.send(PageMapper.toOutput(page, CustomerMapper.toOutput));
     };

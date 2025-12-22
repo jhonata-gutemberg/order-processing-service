@@ -80,10 +80,10 @@ describe("TypeORMCustomerRepository", () => {
         await persistCustomer("Anabel", "anabel@email.com");
 
         const firstPage = await customerRepository.findAll(
-            Pageable.of(Integer.ZERO, Integer.TWO, Sort.of("name")),
+            await Pageable.of(0, Integer.TWO, Sort.of("name")),
         );
         const secondPage = await customerRepository.findAll(
-            Pageable.of(Integer.ONE, Integer.TWO, Sort.of("name")),
+            await Pageable.of(1, Integer.TWO, Sort.of("name")),
         );
 
         expect(firstPage.content.length).toBe(2);
@@ -91,13 +91,13 @@ describe("TypeORMCustomerRepository", () => {
         expect(firstPage.content[0].email.toString()).toBe("anabel@email.com");
         expect(firstPage.content[1].name).toStrictEqual(Name.of("Bruno"));
         expect(firstPage.content[1].email.toString()).toBe("bruno@email.com");
-        expect(firstPage.currentPage).toStrictEqual(Integer.ZERO);
+        expect(firstPage.currentPage).toBe(0);
         expect(firstPage.totalItems).toStrictEqual(Integer.TWO);
         expect(firstPage.totalPages).toStrictEqual(Integer.TWO);
         expect(secondPage.content.length).toBe(1);
         expect(secondPage.content[0].name).toStrictEqual(Name.of("Carlos"));
         expect(secondPage.content[0].email.toString()).toBe("carlos@email.com");
-        expect(secondPage.currentPage).toStrictEqual(Integer.ONE);
+        expect(secondPage.currentPage).toBe(1);
         expect(secondPage.totalItems).toStrictEqual(Integer.ONE);
         expect(secondPage.totalPages).toStrictEqual(Integer.TWO);
     });
@@ -107,9 +107,9 @@ describe("TypeORMCustomerRepository", () => {
         await persistCustomer("Bruno", "bruno@email.com");
         await persistCustomer("Carlos", "carlos@email.com");
 
-        const findAll = () =>
+        const findAll = async () =>
             customerRepository.findAll(
-                Pageable.of(Integer.ZERO, Integer.TEN, Sort.of("name")),
+                await Pageable.of(0, Integer.TEN, Sort.of("name")),
             );
 
         expect(findAll).not.throws();

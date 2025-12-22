@@ -5,7 +5,6 @@ export const PageQueryParamsSchema = z.object({
     page: z
         .string()
         .transform((value) => Number(value))
-        .transform((value) => Integer.of(value, "page"))
         .optional(),
     size: z
         .string()

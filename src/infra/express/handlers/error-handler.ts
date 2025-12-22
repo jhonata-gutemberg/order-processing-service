@@ -1,4 +1,5 @@
 import express from "express";
+import { ValidationError } from "class-validator";
 import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 import {
     CustomerAlreadyExistsException,
@@ -6,7 +7,7 @@ import {
 } from "@/domain/customers/models/exceptions";
 
 export function errorHandler(
-    error: Error,
+    error: unknown,
     req: express.Request,
     res: express.Response,
     next: express.NextFunction,
@@ -15,6 +16,9 @@ export function errorHandler(
         return res.status(400).send({
             message: error.message,
         });
+    }
+    if (error instanceof Array && error[0] instanceof ValidationError) {
+        return res.status(400).send(error);
     }
     if (error instanceof CustomerAlreadyExistsException) {
         return res.status(409).send({
@@ -26,7 +30,5 @@ export function errorHandler(
             message: error.message,
         });
     }
-    return res.status(500).send({
-        message: error.message,
-    });
+    return res.status(500).send(error);
 }

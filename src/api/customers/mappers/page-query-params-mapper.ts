@@ -2,7 +2,9 @@ import { Pageable, Sort } from "@/domain/shared/models/value-objects";
 import { PageQueryParams } from "@/api/customers/models";
 
 export class PageQueryParamsMapper {
-    public static toPageable(pageQueryParams: PageQueryParams): Pageable {
+    public static toPageable(
+        pageQueryParams: PageQueryParams,
+    ): Promise<Pageable> {
         const { page, size, sortBy, direction } = pageQueryParams;
         const sort = sortBy ? Sort.of(sortBy, direction) : undefined;
         return Pageable.of(page, size, sort);

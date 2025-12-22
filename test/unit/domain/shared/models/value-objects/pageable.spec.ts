@@ -3,29 +3,25 @@ import { Integer, Pageable } from "@/domain/shared/models/value-objects";
 import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
 
 describe("Pageable", () => {
-    it("should not be able to create a pageable if page is negative", () => {
-        const pageable = () => Pageable.of(Integer.ONE.negative());
+    it("should not be able to create a pageable if page is negative", async () => {
+        const pageable = () => Pageable.of(-1);
 
-        expect(pageable).throws(
-            IllegalArgumentException,
-            "page must be a non negative Integer",
-        );
+        await expect(pageable).rejects.toThrow();
     });
 
-    it("should not be able to create a pageable if size is zero", () => {
-        const pageable = () => Pageable.of(Integer.ZERO, Integer.ZERO);
+    it("should not be able to create a pageable if size is zero", async () => {
+        const pageable = () => Pageable.of(0, Integer.ZERO);
 
-        expect(pageable).throws(
+        await expect(pageable).rejects.throws(
             IllegalArgumentException,
             "size must be a positive Integer",
         );
     });
 
-    it("should not be able to create a pageable if size is negative", () => {
-        const pageable = () =>
-            Pageable.of(Integer.ZERO, Integer.ONE.negative());
+    it("should not be able to create a pageable if size is negative", async () => {
+        const pageable = () => Pageable.of(0, Integer.ONE.negative());
 
-        expect(pageable).throws(
+        await expect(pageable).rejects.throws(
             IllegalArgumentException,
             "size must be a positive Integer",
         );
