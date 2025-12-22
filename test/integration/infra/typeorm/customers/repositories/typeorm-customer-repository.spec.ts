@@ -7,7 +7,7 @@ import { Customer } from "@/domain/customers/models/entities";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
-import { Pageable, Sort, UUID } from "@/domain/shared/models/value-objects";
+import { Pageable, Sort } from "@/domain/shared/models/value-objects";
 
 describe("TypeORMCustomerRepository", () => {
     let dataSource: DataSource;
@@ -58,7 +58,7 @@ describe("TypeORMCustomerRepository", () => {
         );
 
         const customer = await customerRepository.findById(
-            await UUID.of(customerPersistenceModel.id),
+            customerPersistenceModel.id,
         );
 
         expect(customer).toBeInstanceOf(Customer);

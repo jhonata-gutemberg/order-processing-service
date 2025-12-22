@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
+import { z } from "zod";
 import {
     CreateCustomerUseCase,
     GetCustomerByIdUseCase,
@@ -9,7 +10,7 @@ import { CustomerMapper, PageMapper } from "@/api/customers/mappers";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { PageQueryParamsMapper } from "@/api/customers/mappers";
-import { Page, UUID } from "@/domain/shared/models/value-objects";
+import { Page } from "@/domain/shared/models/value-objects";
 import {
     CustomerInputSchema,
     PageQueryParamsSchema,
@@ -44,7 +45,7 @@ export class CustomerController {
     };
 
     public getById = async (req: Request, res: Response<CustomerOutput>) => {
-        const id = await UUID.of(req.params.id);
+        const id = z.uuidv4().parse(req.params.id);
         const customer = await this.getCustomerByIdUseCase.perform(id);
         res.send(CustomerMapper.toOutput(customer));
     };

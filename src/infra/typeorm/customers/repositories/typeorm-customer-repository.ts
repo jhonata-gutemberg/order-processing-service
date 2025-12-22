@@ -1,7 +1,6 @@
 import { DataSource, FindOptionsOrder, Repository } from "typeorm";
 import { inject, injectable } from "tsyringe";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { UUID } from "@/domain/shared/models/value-objects";
 import { Customer } from "@/domain/customers/models/entities/customer";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { CustomerMapper } from "@/infra/typeorm/customers/mappers";
@@ -16,9 +15,9 @@ export class TypeORMCustomerRepository implements CustomerRepository {
         this.repository = dataSource.getRepository(CustomerPersistenceModel);
     }
 
-    async findById(id: UUID): Promise<Customer | null> {
+    async findById(id: string): Promise<Customer | null> {
         const persistenceModel = await this.repository.findOneBy({
-            id: id.toString(),
+            id,
         });
         return persistenceModel != null
             ? CustomerMapper.toEntity(persistenceModel)

@@ -3,7 +3,6 @@ import { CreateCustomerUseCase } from "@/domain/customers/use-cases";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
 import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
-import { UUID } from "@/domain/shared/models/value-objects";
 
 let createCustomerUseCase: CreateCustomerUseCase;
 let customerRepository: Mocked<CustomerRepository>;
@@ -36,11 +35,10 @@ describe("CreateCustomerUseCase", () => {
         );
         const customerToPersist = customerRepository.save.mock.calls[0][0];
         expect(customerToPersist.name).toBe(name);
-        expect(customerToPersist.email).toStrictEqual(email);
+        expect(customerToPersist.email).toBe(email);
         expect(customer).toBeInstanceOf(Customer);
-        expect(customer.id).toBeInstanceOf(UUID);
         expect(customer.name).toBe(name);
-        expect(customer.email).toStrictEqual(email);
+        expect(customer.email).toBe(email);
     });
 
     it("should throw when customer already exists", async () => {

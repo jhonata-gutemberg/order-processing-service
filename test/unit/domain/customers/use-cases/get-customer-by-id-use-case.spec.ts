@@ -3,7 +3,7 @@ import { GetCustomerByIdUseCase } from "@/domain/customers/use-cases";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
 import { CustomerNotFoundException } from "@/domain/customers/models/exceptions";
-import { UUID } from "@/domain/shared/models/value-objects";
+import { UUIDGenerator } from "@/domain/shared/generators";
 
 let getCustomerByIdUseCase: GetCustomerByIdUseCase;
 let customerRepository: Mocked<CustomerRepository>;
@@ -20,7 +20,7 @@ beforeAll(() => {
 
 describe("GetCustomerByIdUseCase", () => {
     it("should return a customer when found", async () => {
-        const id = UUID.random();
+        const id = UUIDGenerator.generate();
         const customer = await Customer.create({
             id,
             name: "John Doe",
@@ -35,7 +35,7 @@ describe("GetCustomerByIdUseCase", () => {
     });
 
     it("should throw when customer is not found", async () => {
-        const id = UUID.random();
+        const id = UUIDGenerator.generate();
         customerRepository.findById.mockResolvedValue(null);
 
         const useCase = () => getCustomerByIdUseCase.perform(id);

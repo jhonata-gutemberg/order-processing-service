@@ -10,7 +10,7 @@ import {
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
-import { UUID } from "@/domain/shared/models/value-objects";
+import { UUIDGenerator } from "@/domain/shared/generators";
 
 describe("CustomerController", () => {
     let dataSource: DataSource;
@@ -238,7 +238,7 @@ describe("CustomerController", () => {
         });
 
         it("should return 404 when customer does not exist", async () => {
-            const id = UUID.random();
+            const id = UUIDGenerator.generate();
 
             const res = await request
                 .get(`/customers/${id.toString()}`)
