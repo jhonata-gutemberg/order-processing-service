@@ -9,8 +9,8 @@ export class PageMapper {
         const { content, currentPage, pageSize, totalItems, totalPages } = page;
         return {
             content: content.map(contentMapper),
-            currentPage: currentPage,
-            pageSize: pageSize.value,
+            currentPage,
+            pageSize,
             totalItems: totalItems.value,
             totalPages: totalPages.value,
         };

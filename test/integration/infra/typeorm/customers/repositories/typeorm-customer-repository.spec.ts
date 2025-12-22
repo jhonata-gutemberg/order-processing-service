@@ -80,10 +80,10 @@ describe("TypeORMCustomerRepository", () => {
         await persistCustomer("Anabel", "anabel@email.com");
 
         const firstPage = await customerRepository.findAll(
-            await Pageable.of(0, Integer.TWO, Sort.of("name")),
+            await Pageable.of(0, 2, Sort.of("name")),
         );
         const secondPage = await customerRepository.findAll(
-            await Pageable.of(1, Integer.TWO, Sort.of("name")),
+            await Pageable.of(1, 2, Sort.of("name")),
         );
 
         expect(firstPage.content.length).toBe(2);
@@ -109,7 +109,7 @@ describe("TypeORMCustomerRepository", () => {
 
         const findAll = async () =>
             customerRepository.findAll(
-                await Pageable.of(0, Integer.TEN, Sort.of("name")),
+                await Pageable.of(0, 10, Sort.of("name")),
             );
 
         expect(findAll).not.throws();

@@ -47,8 +47,8 @@ export class TypeORMCustomerRepository implements CustomerRepository {
             order = { [sort.by]: sort.direction };
         }
         const [persistenceModels, total] = await this.repository.findAndCount({
-            skip: page * size.value,
-            take: size.value,
+            skip: page * size,
+            take: size,
             order,
         });
         return new Page(
@@ -56,7 +56,7 @@ export class TypeORMCustomerRepository implements CustomerRepository {
             pageable.page,
             pageable.size,
             Integer.of(persistenceModels.length),
-            Integer.of(Math.ceil(total / size.value)),
+            Integer.of(Math.ceil(total / size)),
         );
     }
 }
