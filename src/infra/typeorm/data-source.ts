@@ -33,6 +33,7 @@ export async function createAppDataSource(props?: AppDataSourceProps) {
         entities: [
             ...(await loadClasses("customers/models")),
             ...(await loadClasses("products/models")),
+            ...(await loadClasses("orders/models")),
         ],
         subscribers: [],
         migrations: await loadClasses("migrations"),

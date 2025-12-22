@@ -6,6 +6,10 @@ import {
     CustomerNotFoundException,
 } from "@/domain/customers/models/exceptions";
 import { ProductNotFoundException } from "@/domain/products/models/exceptions";
+import {
+    InsufficientStockException,
+    OrderNotFoundException,
+} from "@/domain/orders/models/exceptions";
 
 export function errorHandler(
     error: unknown,
@@ -23,13 +27,17 @@ export function errorHandler(
     }
     if (
         error instanceof CustomerNotFoundException ||
-        error instanceof ProductNotFoundException
+        error instanceof ProductNotFoundException ||
+        error instanceof OrderNotFoundException
     ) {
         return res.status(404).send({
             message: error.message,
         });
     }
-    if (error instanceof CustomerAlreadyExistsException) {
+    if (
+        error instanceof CustomerAlreadyExistsException ||
+        error instanceof InsufficientStockException
+    ) {
         return res.status(409).send({
             message: error.message,
         });

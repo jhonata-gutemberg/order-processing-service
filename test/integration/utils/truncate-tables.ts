@@ -5,6 +5,6 @@ export async function truncateTables(dataSource: DataSource) {
 
     for (const entity of entities) {
         const repository = dataSource.getRepository(entity.name);
-        await repository.query(`truncate table ${entity.tableName}`);
+        await repository.query(`TRUNCATE TABLE "${entity.tableName}" CASCADE`);
     }
 }
