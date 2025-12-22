@@ -6,7 +6,6 @@ import {
     GetCustomerByIdUseCase,
 } from "@/domain/customers/use-cases";
 import { CustomerOutput } from "@/api/customers/models";
-import { CustomerMapper, PageMapper } from "@/api/customers/mappers";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { PageQueryParamsMapper } from "@/api/customers/mappers";
@@ -15,6 +14,7 @@ import {
     CustomerInputSchema,
     PageQueryParamsSchema,
 } from "@/api/customers/schemas";
+import { Customer } from "@/domain/customers/models/entities";
 
 @injectable()
 export class CustomerController {
@@ -27,26 +27,23 @@ export class CustomerController {
         private readonly customerRepository: CustomerRepository,
     ) {}
 
-    public create = async (req: Request, res: Response<CustomerOutput>) => {
+    public create = async (req: Request, res: Response<Customer>) => {
         const props = await CustomerInputSchema.parseAsync(req.body);
         const customer = await this.createCustomerUseCase.perform(props);
-        res.status(201).send(CustomerMapper.toOutput(customer));
+        res.status(201).send(customer);
     };
 
-    public search = async (
-        req: Request,
-        res: Response<Page<CustomerOutput>>,
-    ) => {
+    public search = async (req: Request, res: Response<Page<Customer>>) => {
         const pageQueryParams = PageQueryParamsSchema.parse(req.query);
         const pageable =
             await PageQueryParamsMapper.toPageable(pageQueryParams);
         const page = await this.customerRepository.findAll(pageable);
-        res.send(PageMapper.toOutput(page, CustomerMapper.toOutput));
+        res.send(page);
     };
 
     public getById = async (req: Request, res: Response<CustomerOutput>) => {
         const id = z.uuidv4().parse(req.params.id);
         const customer = await this.getCustomerByIdUseCase.perform(id);
-        res.send(CustomerMapper.toOutput(customer));
+        res.send(customer);
     };
 }
