@@ -3,10 +3,11 @@ import { Customer } from "@/domain/customers/models/entities";
 
 export class CustomerMapper {
     public static toOutput(customer: Customer): CustomerOutput {
+        const { id, name, email } = customer;
         return {
-            id: customer.id.toString(),
-            name: customer.name.toString(),
-            email: customer.email.toString(),
+            id: id.toString(),
+            name,
+            email,
         };
     }
 }

@@ -4,12 +4,12 @@ import {
     CreateCustomerUseCase,
     GetCustomerByIdUseCase,
 } from "@/domain/customers/use-cases";
-import { CustomerOutput, PageOutput } from "@/api/customers/models";
+import { CustomerOutput } from "@/api/customers/models";
 import { CustomerMapper, PageMapper } from "@/api/customers/mappers";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { PageQueryParamsMapper } from "@/api/customers/mappers";
-import { UUID } from "@/domain/shared/models/value-objects";
+import { Page, UUID } from "@/domain/shared/models/value-objects";
 import {
     CustomerInputSchema,
     PageQueryParamsSchema,
@@ -34,7 +34,7 @@ export class CustomerController {
 
     public search = async (
         req: Request,
-        res: Response<PageOutput<CustomerOutput>>,
+        res: Response<Page<CustomerOutput>>,
     ) => {
         const pageQueryParams = PageQueryParamsSchema.parse(req.query);
         const pageable =
