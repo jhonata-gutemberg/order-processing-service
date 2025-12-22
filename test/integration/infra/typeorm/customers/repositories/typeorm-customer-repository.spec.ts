@@ -4,7 +4,6 @@ import { container } from "tsyringe";
 import { DataSource } from "typeorm";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
-import { Email } from "@/domain/shared/models/value-objects";
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
@@ -26,8 +25,8 @@ describe("TypeORMCustomerRepository", () => {
 
     it("should be able to persist a customer", async () => {
         const name = Name.of("John Doe");
-        const email = await Email.of("john.doe@email.com");
-        const customer = Customer.create({ name, email });
+        const email = "john.doe@email.com";
+        const customer = await Customer.create({ name, email });
 
         await customerRepository.save(customer);
 
@@ -49,9 +48,7 @@ describe("TypeORMCustomerRepository", () => {
             email,
         );
 
-        const customer = await customerRepository.findByEmail(
-            await Email.of(email),
-        );
+        const customer = await customerRepository.findByEmail(email);
 
         expect(customer).toBeInstanceOf(Customer);
         expect(customer?.id.toString()).toBe(customerPersistenceModel.id);

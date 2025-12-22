@@ -10,7 +10,7 @@ import {
 import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
-import { Name, Email, UUID } from "@/domain/shared/models/value-objects";
+import { Name, UUID } from "@/domain/shared/models/value-objects";
 
 describe("CustomerController", () => {
     let dataSource: DataSource;
@@ -171,13 +171,12 @@ describe("CustomerController", () => {
 
         it("should return 409 when customer already exists", async () => {
             const name = "John Doe";
-            const email = await Email.of("john.doe@email.com");
-            await customerRepository.save(
-                Customer.create({
-                    name: Name.of(name),
-                    email,
-                }),
-            );
+            const email = "john.doe@email.com";
+            const customer = await Customer.create({
+                name: Name.of(name),
+                email,
+            });
+            await customerRepository.save(customer);
 
             const res = await request
                 .post("/customers")
@@ -195,25 +194,22 @@ describe("CustomerController", () => {
 
     describe("search", () => {
         it("should return 200 with a list of customers", async () => {
-            let email = await Email.of("john.doe@email.com");
             await customerRepository.save(
-                Customer.create({
+                await Customer.create({
                     name: Name.of("John Doe"),
-                    email,
+                    email: "john.doe@email.com",
                 }),
             );
-            email = await Email.of("anabel@email.com");
             await customerRepository.save(
-                Customer.create({
+                await Customer.create({
                     name: Name.of("Anabel"),
-                    email,
+                    email: "anabel@email.com",
                 }),
             );
-            email = await Email.of("newton@email.com");
             await customerRepository.save(
-                Customer.create({
+                await Customer.create({
                     name: Name.of("Newton"),
-                    email,
+                    email: "newton@email.com",
                 }),
             );
 
@@ -244,9 +240,9 @@ describe("CustomerController", () => {
 
     describe("getById", () => {
         it("should return 200 when customer exists", async () => {
-            const email = await Email.of("john.doe@email.com");
+            const email = "john.doe@email.com";
             const customer = await customerRepository.save(
-                Customer.create({
+                await Customer.create({
                     name: Name.of("John Doe"),
                     email,
                 }),
@@ -259,7 +255,7 @@ describe("CustomerController", () => {
             expect(res.body).toMatchObject({
                 id: customer.id.toString(),
                 name: "John Doe",
-                email: "john.doe@email.com",
+                email,
             });
         });
 

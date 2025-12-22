@@ -3,7 +3,6 @@ import { GetCustomerByIdUseCase } from "@/domain/customers/use-cases";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { Customer } from "@/domain/customers/models/entities";
 import { CustomerNotFoundException } from "@/domain/customers/models/exceptions";
-import { Email } from "@/domain/shared/models/value-objects";
 import { Name, UUID } from "@/domain/shared/models/value-objects";
 
 let getCustomerByIdUseCase: GetCustomerByIdUseCase;
@@ -22,10 +21,10 @@ beforeAll(() => {
 describe("GetCustomerByIdUseCase", () => {
     it("should return a customer when found", async () => {
         const id = UUID.random();
-        const customer = Customer.create({
+        const customer = await Customer.create({
             id,
             name: Name.of("John Doe"),
-            email: Email.of("john.doe@email.com"),
+            email: "john.doe@email.com",
         });
         customerRepository.findById.mockResolvedValue(customer);
 

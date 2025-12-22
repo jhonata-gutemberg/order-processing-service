@@ -1,20 +1,28 @@
-import { Name, Email, UUID } from "@/domain/shared/models/value-objects";
+import { Name, UUID } from "@/domain/shared/models/value-objects";
+import { IsEmail, validateOrReject } from "class-validator";
 
 export type CustomerProps = {
     id?: UUID;
     name: Name;
-    email: Email;
+    email: string;
 };
 
 export class Customer {
+    @IsEmail()
+    public readonly email: string;
+
     private constructor(
         public readonly id: UUID = UUID.random(),
         public readonly name: Name,
-        public readonly email: Email,
-    ) {}
+        email: string,
+    ) {
+        this.email = email;
+    }
 
-    public static create(props: CustomerProps) {
+    public static async create(props: CustomerProps) {
         const { id, name, email } = props;
-        return new Customer(id, name, email);
+        const customer = new Customer(id, name, email);
+        await validateOrReject(customer);
+        return customer;
     }
 }

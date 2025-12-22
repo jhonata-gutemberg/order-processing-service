@@ -3,11 +3,11 @@ import { CustomerRepository } from "@/domain/customers/contracts/repositories";
 import { CustomerAlreadyExistsException } from "@/domain/customers/models/exceptions";
 import { Customer } from "@/domain/customers/models/entities";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
-import { Email, Name } from "@/domain/shared/models/value-objects";
+import { Name } from "@/domain/shared/models/value-objects";
 
 export type CreateCustomerUseCaseProps = {
     name: Name;
-    email: Email;
+    email: string;
 };
 
 @injectable()
@@ -19,12 +19,14 @@ export class CreateCustomerUseCase {
 
     public async perform(props: CreateCustomerUseCaseProps) {
         const { email } = props;
-        const customer = await this.customerRepository.findByEmail(email);
-        if (customer) {
+        const persistedCustomer =
+            await this.customerRepository.findByEmail(email);
+        if (persistedCustomer) {
             throw new CustomerAlreadyExistsException(
                 `customer ${email} already exists`,
             );
         }
-        return await this.customerRepository.save(Customer.create(props));
+        const customer = await Customer.create(props);
+        return await this.customerRepository.save(customer);
     }
 }
