@@ -3,10 +3,10 @@ import { Customer } from "@/domain/customers/models/entities";
 import { Name, Email, UUID } from "@/domain/shared/models/value-objects";
 
 describe("Customer", () => {
-    it("should be able to create customer", () => {
+    it("should be able to create customer", async () => {
         const id = UUID.random();
         const name = Name.of("John Doe");
-        const email = Email.of("john.doe@email.com");
+        const email = await Email.of("john.doe@email.com");
 
         const customer = Customer.create({ id, name, email });
 
@@ -15,9 +15,9 @@ describe("Customer", () => {
         expect(customer.email).toBe(email);
     });
 
-    it("should be able to create customer without passing id", () => {
+    it("should be able to create customer without passing id", async () => {
         const name = Name.of("John Doe");
-        const email = Email.of("john.doe@email.com");
+        const email = await Email.of("john.doe@email.com");
 
         const customer = Customer.create({ name, email });
 

@@ -26,7 +26,7 @@ describe("TypeORMCustomerRepository", () => {
 
     it("should be able to persist a customer", async () => {
         const name = Name.of("John Doe");
-        const email = Email.of("john.doe@email.com");
+        const email = await Email.of("john.doe@email.com");
         const customer = Customer.create({ name, email });
 
         await customerRepository.save(customer);
@@ -49,7 +49,9 @@ describe("TypeORMCustomerRepository", () => {
             email,
         );
 
-        const customer = await customerRepository.findByEmail(Email.of(email));
+        const customer = await customerRepository.findByEmail(
+            await Email.of(email),
+        );
 
         expect(customer).toBeInstanceOf(Customer);
         expect(customer?.id.toString()).toBe(customerPersistenceModel.id);

@@ -27,7 +27,7 @@ export class CustomerController {
     ) {}
 
     public create = async (req: Request, res: Response<CustomerOutput>) => {
-        const props = CustomerInputSchema.parse(req.body);
+        const props = await CustomerInputSchema.parseAsync(req.body);
         const customer = await this.createCustomerUseCase.perform(props);
         res.status(201).send(CustomerMapper.toOutput(customer));
     };

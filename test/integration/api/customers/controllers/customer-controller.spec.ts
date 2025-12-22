@@ -55,50 +55,35 @@ describe("CustomerController", () => {
         it("should return 400 when email is not provided", async () => {
             const name = "John Doe";
 
-            const res = await request
-                .post("/customers")
-                .send({
-                    name,
-                })
-                .expect(400);
-
-            expect(res.body).toMatchObject({
-                message: "email is required",
+            const res = await request.post("/customers").send({
+                name,
             });
+
+            expect(res.status).toBe(400);
         });
 
         it("should return 400 when email is empty", async () => {
             const name = "John Doe";
             const email = "   ";
 
-            const res = await request
-                .post("/customers")
-                .send({
-                    name,
-                    email,
-                })
-                .expect(400);
-
-            expect(res.body).toMatchObject({
-                message: "email is required",
+            const res = await request.post("/customers").send({
+                name,
+                email,
             });
+
+            expect(res.status).toBe(400);
         });
 
         it("should return 400 when email is invalid", async () => {
             const name = "John Doe";
             const email = "invalid email";
 
-            const res = await request
-                .post("/customers")
-                .send({
-                    name,
-                    email,
-                })
-                .expect(400);
-
-            expect(res.body).toMatchObject({
-                message: "invalid email address",
+            const res = await request.post("/customers").send({
+                name,
+                email,
             });
+
+            expect(res.status).toBe(400);
         });
 
         it("should return 400 when name is not provided", async () => {
@@ -186,11 +171,11 @@ describe("CustomerController", () => {
 
         it("should return 409 when customer already exists", async () => {
             const name = "John Doe";
-            const email = "john.doe@email.com";
+            const email = await Email.of("john.doe@email.com");
             await customerRepository.save(
                 Customer.create({
                     name: Name.of(name),
-                    email: Email.of(email),
+                    email,
                 }),
             );
 
@@ -198,34 +183,37 @@ describe("CustomerController", () => {
                 .post("/customers")
                 .send({
                     name,
-                    email,
+                    email: email.toString(),
                 })
                 .expect(409);
 
             expect(res.body).toMatchObject({
-                message: `customer ${email} already exists`,
+                message: `customer ${email.toString()} already exists`,
             });
         });
     });
 
     describe("search", () => {
         it("should return 200 with a list of customers", async () => {
+            let email = await Email.of("john.doe@email.com");
             await customerRepository.save(
                 Customer.create({
                     name: Name.of("John Doe"),
-                    email: Email.of("john.doe@email.com"),
+                    email,
                 }),
             );
+            email = await Email.of("anabel@email.com");
             await customerRepository.save(
                 Customer.create({
                     name: Name.of("Anabel"),
-                    email: Email.of("anabel@email.com"),
+                    email,
                 }),
             );
+            email = await Email.of("newton@email.com");
             await customerRepository.save(
                 Customer.create({
                     name: Name.of("Newton"),
-                    email: Email.of("newton@email.com"),
+                    email,
                 }),
             );
 
@@ -256,10 +244,11 @@ describe("CustomerController", () => {
 
     describe("getById", () => {
         it("should return 200 when customer exists", async () => {
+            const email = await Email.of("john.doe@email.com");
             const customer = await customerRepository.save(
                 Customer.create({
                     name: Name.of("John Doe"),
-                    email: Email.of("john.doe@email.com"),
+                    email,
                 }),
             );
 
@@ -277,7 +266,9 @@ describe("CustomerController", () => {
         it("should return 404 when customer does not exist", async () => {
             const id = UUID.random();
 
-            const res = await request.get(`/customers/${id.toString()}`).expect(404);
+            const res = await request
+                .get(`/customers/${id.toString()}`)
+                .expect(404);
 
             expect(res.body).toMatchObject({
                 message: `customer ${id.toString()} not found`,

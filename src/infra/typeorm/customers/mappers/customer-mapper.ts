@@ -4,10 +4,11 @@ import { Name, Email, UUID } from "@/domain/shared/models/value-objects";
 
 export class CustomerMapper {
     public static async toEntity(persistencyModel: CustomerPersistenceModel) {
+        const email = await Email.of(persistencyModel.email);
         return Customer.create({
             id: await UUID.of(persistencyModel.id),
             name: Name.of(persistencyModel.name),
-            email: Email.of(persistencyModel.email),
+            email,
         });
     }
 

@@ -1,20 +1,17 @@
-import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
-import { StringValidator } from "@/domain/shared/validators";
+import { IsEmail, validateOrReject } from "class-validator";
 
 export class Email {
-    private constructor(private readonly value: string) {}
+    @IsEmail()
+    private readonly value: string;
 
-    public static of(value: string) {
-        StringValidator.validate(value, "email");
-        if (value.trim() === "") {
-            throw new IllegalArgumentException("email is required");
-        }
-        if (
-            !value.match(/^[a-zA-Z0-9]+[._-]?[a-zA-Z0-9]+@[a-z.]+\.[a-z]{2,}$/)
-        ) {
-            throw new IllegalArgumentException("invalid email address");
-        }
-        return new Email(value);
+    private constructor(value: string) {
+        this.value = value;
+    }
+
+    public static async of(value: string) {
+        const email = new Email(value);
+        await validateOrReject(email);
+        return email;
     }
 
     public toString() {
