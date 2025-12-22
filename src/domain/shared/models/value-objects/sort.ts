@@ -1,4 +1,4 @@
-import { StringValidator } from "@/domain/shared/validators";
+import { IsString, validateOrReject } from "class-validator";
 
 export enum SortDirection {
     asc = "asc",
@@ -6,13 +6,22 @@ export enum SortDirection {
 }
 
 export class Sort {
-    private constructor(
-        public readonly by: string,
-        public readonly direction: SortDirection,
-    ) {}
+    @IsString()
+    public readonly by: string;
 
-    public static of(by: string, direction: SortDirection = SortDirection.asc) {
-        StringValidator.validate(by);
-        return new Sort(by, direction);
+    private constructor(
+        by: string,
+        public readonly direction: SortDirection,
+    ) {
+        this.by = by;
+    }
+
+    public static async of(
+        by: string,
+        direction: SortDirection = SortDirection.asc,
+    ) {
+        const sort = new Sort(by, direction);
+        await validateOrReject(sort);
+        return sort;
     }
 }
