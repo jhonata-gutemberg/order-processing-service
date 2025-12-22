@@ -1,4 +1,4 @@
-import { IsInt, Min, validateOrReject } from "class-validator";
+import { IsInt, IsPositive, Min, validateOrReject } from "class-validator";
 import { Sort } from "@/domain/shared/models/value-objects";
 
 export class Pageable {
@@ -7,7 +7,7 @@ export class Pageable {
     public readonly page: number;
 
     @IsInt()
-    @Min(1)
+    @IsPositive()
     public readonly size: number;
 
     private constructor(

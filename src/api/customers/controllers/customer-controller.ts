@@ -44,7 +44,7 @@ export class CustomerController {
     };
 
     public getById = async (req: Request, res: Response<CustomerOutput>) => {
-        const id = UUID.from(req.params.id);
+        const id = await UUID.of(req.params.id);
         const customer = await this.getCustomerByIdUseCase.perform(id);
         res.send(CustomerMapper.toOutput(customer));
     };

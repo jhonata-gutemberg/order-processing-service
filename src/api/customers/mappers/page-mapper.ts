@@ -11,8 +11,8 @@ export class PageMapper {
             content: content.map(contentMapper),
             currentPage,
             pageSize,
-            totalItems: totalItems.value,
-            totalPages: totalPages.value,
+            totalItems,
+            totalPages,
         };
     }
 }

@@ -9,7 +9,6 @@ import { CustomerPersistenceModel } from "@/infra/typeorm/customers/models";
 import { TypeORMCustomerRepository } from "@/infra/typeorm/customers/repositories";
 import { DATA_SOURCE_TOKEN } from "@/infra/di/tokens";
 import {
-    Integer,
     Name,
     Pageable,
     Sort,
@@ -65,7 +64,7 @@ describe("TypeORMCustomerRepository", () => {
         );
 
         const customer = await customerRepository.findById(
-            UUID.from(customerPersistenceModel.id),
+            await UUID.of(customerPersistenceModel.id),
         );
 
         expect(customer).toBeInstanceOf(Customer);
@@ -92,14 +91,14 @@ describe("TypeORMCustomerRepository", () => {
         expect(firstPage.content[1].name).toStrictEqual(Name.of("Bruno"));
         expect(firstPage.content[1].email.toString()).toBe("bruno@email.com");
         expect(firstPage.currentPage).toBe(0);
-        expect(firstPage.totalItems).toStrictEqual(Integer.TWO);
-        expect(firstPage.totalPages).toStrictEqual(Integer.TWO);
+        expect(firstPage.totalItems).toBe(2);
+        expect(firstPage.totalPages).toBe(2);
         expect(secondPage.content.length).toBe(1);
         expect(secondPage.content[0].name).toStrictEqual(Name.of("Carlos"));
         expect(secondPage.content[0].email.toString()).toBe("carlos@email.com");
         expect(secondPage.currentPage).toBe(1);
-        expect(secondPage.totalItems).toStrictEqual(Integer.ONE);
-        expect(secondPage.totalPages).toStrictEqual(Integer.TWO);
+        expect(secondPage.totalItems).toBe(1);
+        expect(secondPage.totalPages).toBe(2);
     });
 
     it("should ignore invalid sortBy", async () => {

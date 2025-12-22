@@ -1,13 +1,11 @@
-import { v4 as uuidV4, validate as validateUUIDV4 } from "uuid";
-import { IllegalArgumentException } from "@/domain/shared/models/exceptions";
+import { v4 as uuidV4 } from "uuid";
+import { IsUUID, validateOrReject } from "class-validator";
 
 export class UUID {
+    @IsUUID()
     private readonly value: string;
 
     private constructor(value: string) {
-        if (!validateUUIDV4(value)) {
-            throw new IllegalArgumentException(`${value} is not a valid UUID`);
-        }
         this.value = value;
     }
 
@@ -15,8 +13,10 @@ export class UUID {
         return new UUID(uuidV4());
     }
 
-    public static from(value: string) {
-        return new UUID(value);
+    public static async of(value: string) {
+        const uuid = new UUID(value);
+        await validateOrReject(uuid);
+        return uuid;
     }
 
     public toString() {

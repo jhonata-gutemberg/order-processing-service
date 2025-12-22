@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Integer, SortDirection } from "@/domain/shared/models/value-objects";
+import { SortDirection } from "@/domain/shared/models/value-objects";
 
 export const PageQueryParamsSchema = z.object({
     page: z.string().transform(Number).optional(),
