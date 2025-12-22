@@ -1,4 +1,4 @@
-import { IsString, validateOrReject } from "class-validator";
+import { IsEnum, IsString, validateOrReject } from "class-validator";
 
 export enum SortDirection {
     asc = "asc",
@@ -9,11 +9,12 @@ export class Sort {
     @IsString()
     public readonly by: string;
 
-    private constructor(
-        by: string,
-        public readonly direction: SortDirection,
-    ) {
+    @IsEnum(SortDirection)
+    public readonly direction: SortDirection;
+
+    private constructor(by: string, direction: SortDirection) {
         this.by = by;
+        this.direction = direction;
     }
 
     public static async of(
