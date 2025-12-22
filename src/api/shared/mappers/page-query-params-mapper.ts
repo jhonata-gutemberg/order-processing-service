@@ -1,5 +1,5 @@
 import { Pageable, Sort } from "@/domain/shared/models/value-objects";
-import { PageQueryParams } from "@/api/customers/models";
+import { PageQueryParams } from "@/api/shared/models";
 
 export class PageQueryParamsMapper {
     public static async toPageable(

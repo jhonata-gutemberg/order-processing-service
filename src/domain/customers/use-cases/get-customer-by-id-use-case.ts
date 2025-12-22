@@ -13,9 +13,7 @@ export class GetCustomerByIdUseCase {
     public async perform(id: string) {
         const customer = await this.customerRepository.findById(id);
         if (customer == null) {
-            throw new CustomerNotFoundException(
-                `customer ${id.toString()} not found`,
-            );
+            throw new CustomerNotFoundException(`customer ${id} not found`);
         }
         return customer;
     }

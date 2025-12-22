@@ -5,16 +5,13 @@ import {
     CreateCustomerUseCase,
     GetCustomerByIdUseCase,
 } from "@/domain/customers/use-cases";
-import { CustomerOutput } from "@/api/customers/models";
 import { CUSTOMER_REPOSITORY_TOKEN } from "@/infra/di/tokens";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { PageQueryParamsMapper } from "@/api/customers/mappers";
+import { PageQueryParamsMapper } from "@/api/shared/mappers";
 import { Page } from "@/domain/shared/models/value-objects";
-import {
-    CustomerInputSchema,
-    PageQueryParamsSchema,
-} from "@/api/customers/schemas";
+import { CustomerInputSchema } from "@/api/customers/schemas";
 import { Customer } from "@/domain/customers/models/entities";
+import { PageQueryParamsSchema } from "@/api/shared/schemas";
 
 @injectable()
 export class CustomerController {
@@ -41,7 +38,7 @@ export class CustomerController {
         res.send(page);
     };
 
-    public getById = async (req: Request, res: Response<CustomerOutput>) => {
+    public getById = async (req: Request, res: Response<Customer>) => {
         const id = z.uuidv4().parse(req.params.id);
         const customer = await this.getCustomerByIdUseCase.perform(id);
         res.send(customer);

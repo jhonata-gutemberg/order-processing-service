@@ -30,7 +30,10 @@ export async function createAppDataSource(props?: AppDataSourceProps) {
         database: props?.database || process.env.DATABASE_NAME,
         synchronize: false,
         logging: false,
-        entities: await loadClasses("customers/models"),
+        entities: [
+            ...(await loadClasses("customers/models")),
+            ...(await loadClasses("products/models")),
+        ],
         subscribers: [],
         migrations: await loadClasses("migrations"),
     });
