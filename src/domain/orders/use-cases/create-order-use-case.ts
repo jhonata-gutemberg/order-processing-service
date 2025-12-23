@@ -1,12 +1,10 @@
 import { inject, injectable } from "tsyringe";
 import { CustomerRepository } from "@/domain/customers/contracts/repositories";
-import { CustomerNotFoundException } from "@/domain/customers/models/exceptions";
 import { ProductRepository } from "@/domain/products/contracts/repositories";
 import { ProductNotFoundException } from "@/domain/products/models/exceptions";
 import { Product } from "@/domain/products/models/entities";
 import { OrderRepository } from "@/domain/orders/contracts/repositories";
 import { Order } from "@/domain/orders/models/entities";
-import { InsufficientStockException } from "@/domain/orders/models/exceptions";
 import {
     CUSTOMER_REPOSITORY_TOKEN,
     PRODUCT_REPOSITORY_TOKEN,
@@ -36,58 +34,72 @@ export class CreateOrderUseCase {
 
     public async perform(props: CreateOrderUseCaseProps) {
         const { customerId, items } = props;
+        const quantityByProductId = this.groupQuantityByProductId(items);
+        const productIds = quantityByProductId.keys().toArray();
+        const products: Product[] =
+            await this.productRepository.findByIds(productIds);
+        const productsById = this.groupProductsById(products);
+        this.checkForMissingProducts(productIds, productsById);
+        await this.reserveStock(products, quantityByProductId);
+        return this.createOrder(customerId, items, productsById);
+    }
 
-        const customer = await this.customerRepository.findById(customerId);
-        if (customer == null) {
-            throw new CustomerNotFoundException(
-                `customer ${customerId} not found`,
+    private groupQuantityByProductId(items: CreateOrderUseCaseItemProps[]) {
+        const quantityByProductId = new Map<string, number>();
+        for (const item of items) {
+            const quantity = quantityByProductId.get(item.productId) ?? 0;
+            quantityByProductId.set(item.productId, quantity + item.quantity);
+        }
+        return quantityByProductId;
+    }
+
+    private groupProductsById(products: Product[]) {
+        return new Map<string, Product>(
+            products.map((product) => [product.id, product]),
+        );
+    }
+
+    private checkForMissingProducts(
+        productIds: string[],
+        productsById: Map<string, Product>,
+    ) {
+        const missingProductIds = productIds.filter(
+            (productId) => !productsById.has(productId),
+        );
+        if (missingProductIds.length > 0) {
+            throw new ProductNotFoundException(
+                `products ${missingProductIds.join(", ")} not found`,
             );
         }
+    }
 
-        const productsById = new Map<string, Product>();
+    private async reserveStock(
+        products: Product[],
+        quantityByProductId: Map<string, number>,
+    ) {
+        products.forEach((product) => {
+            const quantity = quantityByProductId.get(product.id)!;
+            product.reserveStock(quantity);
+        });
+        await this.productRepository.saveAll(products);
+    }
 
-        for (const item of items) {
-            const product = await this.productRepository.findById(item.productId);
-            if (product == null) {
-                throw new ProductNotFoundException(
-                    `product ${item.productId} not found`,
-                );
-            }
-            productsById.set(item.productId, product);
-        }
-
-        for (const item of items) {
-            const product = productsById.get(item.productId);
-            if (product == null) {
-                throw new ProductNotFoundException(
-                    `product ${item.productId} not found`,
-                );
-            }
-            if (product.stock < item.quantity) {
-                throw new InsufficientStockException(
-                    `insufficient stock for product ${product.id}`,
-                );
-            }
-        }
-
-        for (const item of items) {
-            const product = productsById.get(item.productId)!;
-            await product.updateStock(product.stock - item.quantity);
-            await this.productRepository.save(product);
-        }
-
+    private async createOrder(
+        customerId: string,
+        items: CreateOrderUseCaseItemProps[],
+        productsById: Map<string, Product>,
+    ) {
         const order = await Order.create({
             customerId,
-            items: items.map((item) => {
-                const product = productsById.get(item.productId)!;
+            items: items.map(({ productId, quantity }) => {
+                const { price: unitPrice } = productsById.get(productId)!;
                 return {
-                    productId: item.productId,
-                    quantity: item.quantity,
-                    unitPrice: product.price,
+                    productId,
+                    quantity,
+                    unitPrice,
                 };
             }),
         });
-
-        return await this.orderRepository.save(order);
+        return this.orderRepository.save(order);
     }
 }

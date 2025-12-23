@@ -1,4 +1,4 @@
-import { DataSource, FindOptionsOrder, Repository } from "typeorm";
+import { DataSource, FindOptionsOrder, In, Repository } from "typeorm";
 import { inject, injectable } from "tsyringe";
 import { ProductRepository } from "@/domain/products/contracts/repositories";
 import { Product } from "@/domain/products/models/entities/product";
@@ -24,10 +24,11 @@ export class TypeORMProductRepository implements ProductRepository {
             : null;
     }
 
-    async save(product: Product): Promise<Product> {
-        let persistenceModel = ProductMapper.toPersistencyModel(product);
-        persistenceModel = await this.repository.save(persistenceModel);
-        return ProductMapper.toEntity(persistenceModel);
+    async findByIds(ids: string[]): Promise<Product[]> {
+        const persistenceModels = await this.repository.findBy({
+            id: In(ids),
+        });
+        return Promise.all(persistenceModels.map(ProductMapper.toEntity));
     }
 
     async findAll(pageable: Pageable): Promise<Page<Product>> {
@@ -51,5 +52,18 @@ export class TypeORMProductRepository implements ProductRepository {
             persistenceModels.length,
             Math.ceil(total / size),
         );
+    }
+
+    async save(product: Product): Promise<Product> {
+        let persistenceModel = ProductMapper.toPersistencyModel(product);
+        persistenceModel = await this.repository.save(persistenceModel);
+        return ProductMapper.toEntity(persistenceModel);
+    }
+
+    async saveAll(products: Product[]): Promise<void> {
+        const persistenceModels = products.map(
+            ProductMapper.toPersistencyModel,
+        );
+        await this.repository.save(persistenceModels);
     }
 }

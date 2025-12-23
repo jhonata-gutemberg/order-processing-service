@@ -1,22 +1,23 @@
 import { Request, Response } from "express";
 import { inject, injectable } from "tsyringe";
 import { z } from "zod";
-import { CreateOrderUseCase, GetOrderByIdUseCase } from "@/domain/orders/use-cases";
+import { GetOrderByIdUseCase } from "@/domain/orders/use-cases";
 import { OrderInputSchema } from "@/api/orders/schemas";
 import { Order } from "@/domain/orders/models/entities";
+import { CreateOrderOrchestrator } from "@/domain/orders/orchestrators";
 
 @injectable()
 export class OrderController {
     constructor(
-        @inject(CreateOrderUseCase)
-        private readonly createOrderUseCase: CreateOrderUseCase,
+        @inject(CreateOrderOrchestrator)
+        private readonly createOrderOrchestrator: CreateOrderOrchestrator,
         @inject(GetOrderByIdUseCase)
         private readonly getOrderByIdUseCase: GetOrderByIdUseCase,
     ) {}
 
     public create = async (req: Request, res: Response<Order>) => {
         const props = await OrderInputSchema.parseAsync(req.body);
-        const order = await this.createOrderUseCase.perform(props);
+        const order = await this.createOrderOrchestrator.perform(props);
         res.status(201).send(order);
     };
 

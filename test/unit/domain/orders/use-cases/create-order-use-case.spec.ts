@@ -25,8 +25,10 @@ beforeAll(() => {
     };
     productRepository = {
         findById: vi.fn(),
-        save: vi.fn(),
+        findByIds: vi.fn(),
         findAll: vi.fn(),
+        save: vi.fn(),
+        saveAll: vi.fn(),
     };
     orderRepository = {
         save: vi.fn(),
@@ -62,9 +64,7 @@ describe("CreateOrderUseCase", () => {
             stock: 10,
         });
         customerRepository.findById.mockResolvedValue(customer);
-        productRepository.findById
-            .mockResolvedValueOnce(product1)
-            .mockResolvedValueOnce(product2);
+        productRepository.findByIds.mockResolvedValueOnce([product1, product2]);
         productRepository.save.mockImplementation(async (p) => p);
         orderRepository.save.mockImplementation(async (o) => o);
 
@@ -76,11 +76,8 @@ describe("CreateOrderUseCase", () => {
             ],
         });
 
-        expect(customerRepository.findById).toHaveBeenCalledExactlyOnceWith(
-            customerId,
-        );
-        expect(productRepository.findById).toHaveBeenCalledTimes(2);
-        expect(productRepository.save).toHaveBeenCalledTimes(2);
+        expect(productRepository.findByIds).toHaveBeenCalledTimes(1);
+        expect(productRepository.saveAll).toHaveBeenCalledTimes(1);
         expect(orderRepository.save).toHaveBeenCalledExactlyOnceWith(
             expect.any(Order),
         );
@@ -93,22 +90,6 @@ describe("CreateOrderUseCase", () => {
         expect(order.total).toBe(10 * 2 + 5.5 * 3);
     });
 
-    it("should throw when customer does not exist", async () => {
-        const customerId = UUIDGenerator.generate();
-        customerRepository.findById.mockResolvedValue(null);
-
-        const useCase = () =>
-            createOrderUseCase.perform({
-                customerId,
-                items: [{ productId: UUIDGenerator.generate(), quantity: 1 }],
-            });
-
-        await expect(useCase).rejects.throws(
-            CustomerNotFoundException,
-            `customer ${customerId} not found`,
-        );
-    });
-
     it("should throw when some product does not exist", async () => {
         const customerId = UUIDGenerator.generate();
         const productId = UUIDGenerator.generate();
@@ -118,7 +99,7 @@ describe("CreateOrderUseCase", () => {
             email: "john.doe@email.com",
         });
         customerRepository.findById.mockResolvedValue(customer);
-        productRepository.findById.mockResolvedValue(null);
+        productRepository.findByIds.mockResolvedValue([]);
 
         const useCase = () =>
             createOrderUseCase.perform({
@@ -128,7 +109,7 @@ describe("CreateOrderUseCase", () => {
 
         await expect(useCase).rejects.throws(
             ProductNotFoundException,
-            `product ${productId} not found`,
+            `products ${productId} not found`,
         );
     });
 
@@ -147,7 +128,7 @@ describe("CreateOrderUseCase", () => {
             stock: 1,
         });
         customerRepository.findById.mockResolvedValue(customer);
-        productRepository.findById.mockResolvedValue(product);
+        productRepository.findByIds.mockResolvedValue([product]);
 
         const useCase = () =>
             createOrderUseCase.perform({

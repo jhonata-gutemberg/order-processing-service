@@ -8,6 +8,7 @@ import {
     validateOrReject,
 } from "class-validator";
 import { UUIDGenerator } from "@/domain/shared/generators";
+import { InsufficientStockException } from "@/domain/orders/models/exceptions";
 
 export type ProductProps = {
     id?: string;
@@ -54,5 +55,14 @@ export class Product {
     public async updateStock(stock: number) {
         this.stock = stock;
         await validateOrReject(this);
+    }
+
+    public reserveStock(quantity: number) {
+        if (this.stock < quantity) {
+            throw new InsufficientStockException(
+                `insufficient stock for product ${this.id}`,
+            );
+        }
+        this.stock -= quantity;
     }
 }
