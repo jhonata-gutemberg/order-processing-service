@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import "dotenv/config";
+import "module-alias/register";
 import "@/infra/di/register";
 import { container } from "tsyringe";
 import { createApp } from "@/infra/express/app";

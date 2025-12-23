@@ -33,6 +33,8 @@ export class OrderMapper {
             itemModel.orderId = entity.id;
             itemModel.productId = item.productId;
             itemModel.quantity = item.quantity;
+            itemModel.unitPrice = item.unitPrice;
+            itemModel.total = item.total;
             return itemModel;
         });
         return model;
